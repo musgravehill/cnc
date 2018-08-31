@@ -1,0 +1,91 @@
+function units() 
+{
+	var old_un = document.getElementById("lb_un").innerHTML;
+	var obj_un = document.getElementById("unitsid");
+	var new_un = obj_un.options[obj_un.selectedIndex].text;
+	
+	var b = document.getElementById("bid").value; b = b.replace(',', "."); b = parseFloat(b);
+	
+	var b_new = convert(b, old_un, new_un);
+	document.getElementById("bid").value = b_new;
+
+	document.getElementById("lb_un").innerHTML = new_un;
+	
+	
+}
+
+function calc()
+{
+	var un = document.getElementById("lb_un").innerHTML;
+	var d = document.getElementById("bid").value; d = d.replace(',', "."); d = parseFloat(d);
+	var obj_table = document.getElementById("tablerezid");	
+	var F = 0;
+	var Jx = 0;
+	var Jy = 0;
+	var Wx = 0;
+	var Wy = 0;
+	var ix = 0;
+	var iy = 0;
+	 
+	F = Math.PI*Math.pow(d,2)/4; 
+	Jx = Math.PI*Math.pow(d,4)/64;
+	Jy = Jx;
+	Wx = 2*Jx/d;
+	Wy = Wx;
+	ix =d/4;
+	iy =ix;
+	
+	F = okrugl(F);
+	Jx = okrugl(Jx);
+	Jy = okrugl(Jy);
+	Wx = okrugl(Wx);
+	Wy = okrugl(Wy);
+	ix = okrugl(ix);
+	iy = okrugl(iy);
+	 
+	document.getElementById("rez_f").innerHTML = "";
+	document.getElementById("rez_f").innerHTML = "F = &#960; * d<sup>2</sup> / 4 = &#960; * "+d+"<sup>2</sup> / 4 = "+F+" "+un+"<sup>2</sup>";
+	 
+	document.getElementById("rez_jx").innerHTML = "";
+	document.getElementById("rez_jx").innerHTML = "Jx =  &#960; * d<sup>4</sup> / 64 = &#960; * "+d+"<sup>4</sup> / 64 = "+Jx+" "+un+"<sup>4</sup>.";	
+	 
+	document.getElementById("rez_jy").innerHTML = "";
+	document.getElementById("rez_jy").innerHTML = "Jy = Jx = "+Jy+" "+un+"<sup>4</sup>.";
+	 
+	document.getElementById("rez_wx").innerHTML = "";
+	document.getElementById("rez_wx").innerHTML = "Wx = 2 * Jx / d = 2 * "+Jx+" / "+d+" = "+Wx+" "+un+"<sup>3</sup>.";	
+	 
+	document.getElementById("rez_wy").innerHTML = "";
+	document.getElementById("rez_wy").innerHTML = "Wy = Wx = "+Wy+" "+un+"<sup>3</sup>.";
+	 
+	document.getElementById("rez_ix").innerHTML = "";
+	document.getElementById("rez_ix").innerHTML = "i<sub>x</sub> = d / 4 = "+d+" / 4 = "+ix+" "+un+".";
+	 
+	document.getElementById("rez_iy").innerHTML = "";
+	document.getElementById("rez_iy").innerHTML = "i<sub>y</sub> = i<sub>x</sub> = "+iy+" "+un+".";
+	
+	if (obj_table.selectedIndex == 1) {
+	 newrow= document.all.table_flange_1.insertRow(); var cс=0;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=d;  cс=cс+1;		 
+     newcell=newrow.insertCell(cс); newcell.innerHTML=F+" "+un+"<sup>2</sup>";  cс=cс+1;
+     newcell=newrow.insertCell(cс); newcell.innerHTML=Jx+" "+un+"<sup>4</sup>";  cс=cс+1;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=Jy+" "+un+"<sup>4</sup>";  cс=cс+1;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=Wx+" "+un+"<sup>3</sup>";  cс=cс+1;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=Wy+" "+un+"<sup>3</sup>";  cс=cс+1;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=ix+" "+un;  cс=cс+1;
+	 newcell=newrow.insertCell(cс); newcell.innerHTML=iy+" "+un;  cс=cс+1; 
+	 obj_table.selectedIndex = 0;}
+}
+
+function CreateTable() {
+	 var c = 0;
+     newrow= document.all.table_flange_1.insertRow(); var c=0;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="d";  c=c+1;		 
+     newcell=newrow.insertCell(c); newcell.innerHTML="F";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="Jx";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="Jy";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="Wx";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="Wy";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="ix";  c=c+1;
+	 newcell=newrow.insertCell(c); newcell.innerHTML="iy";  c=c+1;
+}
