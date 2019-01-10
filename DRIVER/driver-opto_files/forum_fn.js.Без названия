@@ -1,0 +1,905 @@
+/**
+* phpBB3 forum functions
+*/
+
+$ = jQuery;
+
+
+
+// Execute functions before load (i.e. for replacing youtube objects and etc.)
+var before_load_functions = new Array();
+
+function before_load()
+{
+	for (var i = 0; i < before_load_functions.length; i++)
+	{
+		eval(before_load_functions[i]);
+	}
+};
+
+
+/**
+* Window popup
+*/
+function popup(url, width, height, name)
+{
+	if (!name)
+	{
+		name = '_popup';
+	}
+
+	window.open(url.replace(/&amp;/g, '&'), name, 'height=' + height + ',resizable=yes,scrollbars=yes, width=' + width);
+	return false;
+}
+
+/**
+* Jump to page
+*/
+function jumpto()
+{
+	var page = prompt(jump_page, on_page);
+
+	if (page !== null && !isNaN(page) && page == Math.floor(page) && page > 0)
+	{
+		if (base_url.indexOf('?') == -1)
+		{
+			document.location.href = base_url + '?start=' + ((page - 1) * per_page);
+		}
+		else
+		{
+			document.location.href = base_url.replace(/&amp;/g, '&') + '&start=' + ((page - 1) * per_page);
+		}
+	}
+}
+
+/**
+* Mark/unmark checklist
+* id = ID of parent container, name = name prefix, state = state [true/false]
+*/
+function marklist(id, name, state)
+{
+	var parent = document.getElementById(id);
+	if (!parent)
+	{
+		eval('parent = document.' + id);
+	}
+
+	if (!parent)
+	{
+		return;
+	}
+
+	var rb = parent.getElementsByTagName('input');
+	
+	for (var r = 0; r < rb.length; r++)
+	{	
+		if (rb[r].name.substr(0, name.length) == name)
+		{
+			rb[r].checked = state;
+		}
+	}
+}
+
+/**
+* Resize viewable area for attached image or topic review panel (possibly others to come)
+* e = element
+*/
+function viewableArea(e, itself)
+{
+	if (!e) return;
+	if (!itself)
+	{
+		e = e.parentNode;
+	}
+	
+	if (!e.vaHeight)
+	{
+		// Store viewable area height before changing style to auto
+		e.vaHeight = e.offsetHeight;
+		e.vaMaxHeight = e.style.maxHeight;
+		e.style.height = 'auto';
+		e.style.maxHeight = 'none';
+		e.style.overflow = 'visible';
+	}
+	else
+	{
+		// Restore viewable area height to the default
+		e.style.height = e.vaHeight + 'px';
+		e.style.overflow = 'auto';
+		e.style.maxHeight = e.vaMaxHeight;
+		e.vaHeight = false;
+	}
+}
+
+/**
+* Set display of page element
+* s[-1,0,1] = hide,toggle display,show
+* type = string: inline, block, inline-block or other CSS "display" type
+*/
+function dE(n, s, type)
+{
+	if (!type)
+	{
+		type = 'block';
+	}
+
+	var e = document.getElementById(n);
+	if (!s)
+	{
+		s = (e.style.display == '' || e.style.display == type) ? -1 : 1;
+	}
+	e.style.display = (s == 1) ? type : 'none';
+}
+
+/**
+* Alternate display of subPanels
+*/
+function subPanels(p)
+{
+	var i, e, t;
+
+	if (typeof(p) == 'string')
+	{
+		show_panel = p;
+	}
+
+	for (i = 0; i < panels.length; i++)
+	{
+		e = document.getElementById(panels[i]);
+		t = document.getElementById(panels[i] + '-tab');
+
+		if (e)
+		{
+			if (panels[i] == show_panel)
+			{
+				e.style.display = 'block';
+				if (t)
+				{
+					t.className = 'activetab';
+				}
+			}
+			else
+			{
+				e.style.display = 'none';
+				if (t)
+				{
+					t.className = '';
+				}
+			}
+		}
+	}
+}
+
+/**
+* Call print preview
+*/
+function printPage()
+{
+	if (is_ie)
+	{
+		printPreview();
+	}
+	else
+	{
+		window.print();
+	}
+}
+
+/**
+* Show/hide groups of blocks
+* c = CSS style name
+* e = checkbox element
+* t = toggle dispay state (used to show 'grip-show' image in the profile block when hiding the profiles) 
+*/
+function displayBlocks(c, e, t)
+{
+	var s = (e.checked == true) ?  1 : -1;
+
+	if (t)
+	{
+		s *= -1;
+	}
+
+	var divs = document.getElementsByTagName("DIV");
+
+	for (var d = 0; d < divs.length; d++)
+	{
+		if (divs[d].className.indexOf(c) == 0)
+		{
+			divs[d].style.display = (s == 1) ? 'none' : 'block';
+		}
+	}
+}
+
+function viewableCode(a)
+{
+	// Get ID of code block
+	var e = a.parentNode.parentNode.getElementsByTagName('CODE')[0];
+
+	viewableArea(e, true);
+	if (a.firstChild.data == expand_view) { a.firstChild.data = collapse_view }
+	else if (a.firstChild.data == collapse_view) { a.firstChild.data = expand_view }
+} 
+
+
+
+function highlightInit() {
+	var boxes = document.getElementsByTagName('code');
+	for (i = 0; i < boxes.length; i++) {
+		if (boxes[i].innerHTML.indexOf('<span') < 0) {
+			hljs.highlightBlock(boxes[i], null, true);
+		}
+	}
+}
+onload_functions.push('highlightInit()');
+
+
+
+function selectCode(a)
+{
+	// Get ID of code block
+	var e = a.parentNode.parentNode.getElementsByTagName('CODE')[0];
+
+	// Not IE and IE9+
+	if (window.getSelection)
+	{
+		var s = window.getSelection();
+		// Safari
+		if (s.setBaseAndExtent)
+		{
+			s.setBaseAndExtent(e, 0, e, e.innerText.length - 1);
+		}
+		// Firefox and Opera
+		else
+		{
+			// workaround for bug # 42885
+			if (window.opera && e.innerHTML.substring(e.innerHTML.length - 4) == '<BR>')
+			{
+				e.innerHTML = e.innerHTML + '&nbsp;';
+			}
+
+			var r = document.createRange();
+			r.selectNodeContents(e);
+			s.removeAllRanges();
+			s.addRange(r);
+		}
+	}
+	// Some older browsers
+	else if (document.getSelection)
+	{
+		var s = document.getSelection();
+		var r = document.createRange();
+		r.selectNodeContents(e);
+		s.removeAllRanges();
+		s.addRange(r);
+	}
+	// IE
+	else if (document.selection)
+	{
+		var r = document.body.createTextRange();
+		r.moveToElementText(e);
+		r.select();
+	}
+}
+
+/**
+* Play quicktime file by determining it's width/height
+* from the displayed rectangle area
+*/
+function play_qt_file(obj)
+{
+	var rectangle = obj.GetRectangle();
+
+	if (rectangle)
+	{
+		rectangle = rectangle.split(',');
+		var x1 = parseInt(rectangle[0]);
+		var x2 = parseInt(rectangle[2]);
+		var y1 = parseInt(rectangle[1]);
+		var y2 = parseInt(rectangle[3]);
+
+		var width = (x1 < 0) ? (x1 * -1) + x2 : x2 - x1;
+		var height = (y1 < 0) ? (y1 * -1) + y2 : y2 - y1;
+	}
+	else
+	{
+		var width = 200;
+		var height = 0;
+	}
+
+	obj.width = width;
+	obj.height = height + 16;
+
+	obj.SetControllerVisible(true);
+	obj.Play();
+}
+
+/**
+* Check if the nodeName of elem is name
+* @author jQuery
+*/
+function is_node_name(elem, name)
+{
+	return elem.nodeName && elem.nodeName.toUpperCase() == name.toUpperCase();
+}
+
+/**
+* Check if elem is in array, return position
+* @author jQuery
+*/
+function is_in_array(elem, array)
+{
+	for (var i = 0, length = array.length; i < length; i++)
+		// === is correct (IE)
+		if (array[i] === elem)
+			return i;
+
+	return -1;
+}
+
+/**
+* Find Element, type and class in tree
+* Not used, but may come in handy for those not using JQuery
+* @author jQuery.find, Meik Sievertsen
+*/
+function find_in_tree(node, tag, type, class_name)
+{
+	var result, element, i = 0, length = node.childNodes.length;
+
+	for (element = node.childNodes[0]; i < length; element = node.childNodes[++i])
+	{
+		if (!element || element.nodeType != 1) continue;
+
+		if ((!tag || is_node_name(element, tag)) && (!type || element.type == type) && (!class_name || is_in_array(class_name, (element.className || element).toString().split(/\s+/)) > -1))
+		{
+			return element;
+		}
+
+		if (element.childNodes.length)
+			result = find_in_tree(element, tag, type, class_name);
+
+		if (result) return result;
+	}
+}
+
+var in_autocomplete = false;
+var last_key_entered = '';
+
+/**
+* Check event key
+*/
+function phpbb_check_key(event)
+{
+	// Keycode is array down or up?
+	if (event.keyCode && (event.keyCode == 40 || event.keyCode == 38))
+		in_autocomplete = true;
+
+	// Make sure we are not within an "autocompletion" field
+	if (in_autocomplete)
+	{
+		// If return pressed and key changed we reset the autocompletion
+		if (!last_key_entered || last_key_entered == event.which)
+		{
+			in_autocompletion = false;
+			return true;
+		}
+	}
+
+	// Keycode is not return, then return. ;)
+	if (event.which != 13)
+	{
+		last_key_entered = event.which;
+		return true;
+	}
+
+	return false;
+}
+
+/**
+* Usually used for onkeypress event, to submit a form on enter
+*/
+function submit_default_button(event, selector, class_name)
+{
+	// Add which for key events
+	if (!event.which && ((event.charCode || event.charCode === 0) ? event.charCode : event.keyCode))
+		event.which = event.charCode || event.keyCode;
+
+	if (phpbb_check_key(event))
+		return true;
+
+	var current = selector['parentNode'];
+
+	// Search parent form element
+	while (current && (!current.nodeName || current.nodeType != 1 || !is_node_name(current, 'form')) && current != document)
+		current = current['parentNode'];
+
+	// Find the input submit button with the class name
+	//current = find_in_tree(current, 'input', 'submit', class_name);
+	var input_tags = current.getElementsByTagName('input');
+	current = false;
+
+	for (var i = 0, element = input_tags[0]; i < input_tags.length; element = input_tags[++i])
+	{
+		if (element.type == 'submit' && is_in_array(class_name, (element.className || element).toString().split(/\s+/)) > -1)
+			current = element;
+	}
+
+	if (!current)
+		return true;
+
+	// Submit form
+	current.focus();
+	current.click();
+	return false;
+}
+
+/**
+* Apply onkeypress event for forcing default submit button on ENTER key press
+* The jQuery snippet used is based on http://greatwebguy.com/programming/dom/default-html-button-submit-on-enter-with-jquery/
+* The non-jQuery code is a mimick of the jQuery code ;)
+*/
+function apply_onkeypress_event()
+{
+	// jQuery code in case jQuery is used
+	if (jquery_present)
+	{
+		jQuery('form input[type=text], form input[type=password]').live('keypress', function (e)
+		{
+			var default_button = jQuery(this).parents('form').find('input[type=submit].default-submit-action');
+			
+			if (!default_button || default_button.length <= 0)
+				return true;
+
+			if (phpbb_check_key(e))
+				return true;
+
+			if ((e.which && e.which == 13) || (e.keyCode && e.keyCode == 13))
+			{
+				default_button.click();
+				return false;
+			}
+
+			return true;
+		});
+	
+		return;
+	}
+
+	var input_tags = document.getElementsByTagName('input');
+
+	for (var i = 0, element = input_tags[0]; i < input_tags.length ; element = input_tags[++i])
+	{
+		if (element.type == 'text' || element.type == 'password')
+		{
+			// onkeydown is possible too
+			element.onkeypress = function (evt) { submit_default_button((evt || window.event), this, 'default-submit-action'); };
+		}
+	}
+}
+
+function activate_colorbox()
+{
+	$(".post").each(function(){
+		id = this.id;
+		$("a.colorbox",this).colorbox({
+										rel:id,
+										transition:"none",
+										photo:true,
+										maxWidth:"95%",maxHeight:"95%",
+										scalePhotos:true, 
+										title: function(){return $("img",this).attr("title")+" <a href='"+this.href.replace(/&mt=1/g, '')+"' target='_blank'>Загрузить оригинал</a>";}
+									} );
+	});
+}
+onload_functions.push('activate_colorbox();');
+
+
+
+
+/*-----------------------------------------------------------------*/
+/*-               Shrink profile                                  -*/
+/*-----------------------------------------------------------------*/
+
+function show_profile(id)
+{
+	$(id).css({"height":"auto"});
+	$(".show-profile-div",id).hide();
+}
+profile_id = 0;
+function shrink_profiles()
+{
+	$(".post").each(function(){
+			post_bg = $(this).hasClass('bg1') ? "bg2" : ""
+			post = $(".postbody", this);
+			profile = $(".postprofile", this);
+			h = post.height()-15;
+			h1 = profile.height();
+			if (h1>h)
+			{
+				avatar = $(".postprofile dt a img", this);
+				h1 = avatar.height();
+				profile.height(Math.max(h, h1+35));
+				id = profile.attr("id");
+				profile.addClass("profile_"+profile_id);
+				profile.prepend("<div class='show-profile-div " + post_bg + "'>"+
+				 "<a onclick='show_profile(\".profile_"+profile_id+"\");'></a>"+
+				 "</div>");
+				profile_id++;
+
+			}
+		});
+}
+
+
+/*-----------------------------------------------------------------*/
+
+
+var dragging_textarea_handle = null;
+var dragging_textarea_handle_y;
+var dragging_textarea_handle_h;
+
+function make_textareas_resizable()
+{
+//	return;
+	$("div#message-box textarea.inputbox").each(function (){
+		var txt=$(this);
+		var w = 100 * parseFloat(txt.css('width')) / parseFloat(txt.parent().css('width'));
+		if (w>100){w=100;}
+		w = w+"%";
+		
+	//	txt.wrap("<div style='margin-bottom:7px;'>");
+		div = txt.parent();
+		div.css({"height": txt.css("height"), "position":"relative", "margin-bottom":"15px"});
+		txt.css({"width": "100%","height": "100%"});
+		txt.after("<div class='resize-v-handle'>&nbsp;</div>");
+	});
+
+	$(".resize-v-handle").mousedown(function(event){
+		dragging_textarea_handle = $(this).parent();
+		dragging_textarea_handle_h = parseFloat(dragging_textarea_handle.css("height"));
+		dragging_textarea_handle_y = parseFloat(event.pageY || event1.clientY + document.documentElement.scrollTop); // FF || IE);
+		$(document.body).mousemove(function(event1){
+			if (dragging_textarea_handle != null)
+			{
+				y = parseFloat(event1.pageY || event1.clientY + document.documentElement.scrollTop); // FF || IE
+				dragging_textarea_handle.css("height", dragging_textarea_handle_h + y - dragging_textarea_handle_y);
+				$(document.body).css({"cursor":"s-resize"});
+				$(document.body).mouseup(function(){
+					$(document.body).unbind("mousemove");
+					$(document.body).unbind("mouseup");
+					$(document.body).css({"cursor":"default"});
+				});
+			}
+			else
+			{$(document.body).unbind("mousemove");}
+
+		});
+
+	});
+
+	$(document.body).append("<style type='text/css'>.resize-v-handle{ position: absolute;font-size: 0.1px;z-index: 1100; bottom: -13px; left: 0; display: block; height:8px;cursor: s-resize; width: 100%; background: url(data:image/gif;base64,R0lGODlhMgAHAIQUAKqqqry8vL29vcPDw8fHx8vLy9DQ0NHR0dbW1tfX19jY2NnZ2dvb29zc3N7e3uTk5Ovr6/Hx8fPz8/r6+v///////////////////////////////////////////////yH+IUNyZWF0ZWQgd2l0aCBHSU1QIGZvciBjbmMtY2x1Yi5ydQAh+QQBCgAfACwAAAAAMgAHAAAFZ+BnDEJgnmiqrqwqDMbHIE1t33iu73yDMIWHcEgECI0PpPLITDaRRGKBAKlar4BqFrLtar9c8PZ6JRwk6LQagGZL3PC2/D13q9UHR2TC7/v/gIGCgxMRDh8JCwqLjI2Oj5CRkQsJHyEAOw==) no-repeat center 0px;}</style>");
+
+
+}
+//onload_functions.push('make_textareas_resizable();');
+
+/*
+* Set header image gallery
+*/
+
+function  add_header_image_gallery()
+{
+	$.get(
+			"/custom_scripts/forum_header_gallery.php?width="+($("#page-header").width()-450-220-10),
+			function(data){$("#site-description").after(data);}
+		);
+}
+
+onload_functions.push('add_header_image_gallery()');
+
+/**
+* Detect JQuery existance. We currently do not deliver it, but some styles do, so why not benefit from it. ;)
+*/
+var jquery_present = typeof jQuery == 'function';
+
+function copyToClipboard (text) {
+  window.prompt ("Copy to clipboard: Ctrl+C, Enter", text.replace('"',""));
+}
+
+function replace_youtube()
+{
+	$(".postbody .content a").each(function(){
+		a = $(this);
+		if ( a.attr("href").match(/^https?:\/\/(www.)?(youtube\.|youtu.be)/g) )
+		{	
+			if ( a.attr("href").match(/^https?:\/\/(www\.)?youtu\.be\/[-0-9A-Za-z_]+$/g) )
+			{
+				v = a.attr("href").match(/\/([-A-Za-z0-9_]+)$/g);
+				if (v) v = v[0].substring(1)
+				else v = false;
+			}
+			else
+			{
+				v = a.attr("href").match(/(\?|&)v=([-A-Za-z0-9_]+)/g);
+				if (v) v = v[0].substring(3)
+				else v = false;
+			}
+			list = a.attr("href").match(/(\?|&)list=([-A-Za-z0-9_]+)/g);
+			if (list) {list="?"+list[0].substring(1);}
+			else {list="";}
+			if (v){
+				a.before('<iframe width="560" height="315" src="'+('https:' == document.location.protocol ? 'https://' : 'http://')+'www.youtube.com/embed/'+v+list+'" frameborder="0" allowfullscreen></iframe>');
+				a.addClass("youtube-inserted");
+			}
+		}
+	});
+}
+
+before_load_functions.push('replace_youtube()');
+
+
+
+
+function yandex_search()
+{
+	$("#yandex-search .text").val($("#search .inputbox.search").val());
+	$("#yandex-search [type=submit]").click()
+	return false;
+}
+
+function google_search()
+{
+	text="site:cnc-club.ru "+($("#search .inputbox.search").val());
+	$("#google-search .text").val(text);
+	$("#google-search [type=submit]").click()
+	return false;
+}
+
+
+function show_yandex_ad()
+{
+	if ( $("body.user")[0]) {return ;}
+	var isMobile = false; //initiate as false
+	// device detection
+	if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|ipad|iris|kindle|Android|Silk|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(navigator.userAgent) 
+		|| /1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(navigator.userAgent.substr(0,4))) isMobile = true;
+	if (isMobile) {return ;}
+	$("#page-body").first().after('<div id="yandex_ad"><div id="yandex_rtb_R-A-152153-1"></div></div>');
+	(function(w, d, n, s, t) {
+		w[n] = w[n] || [];
+		w[n].push(function() {
+			Ya.Context.AdvManager.render({
+				blockId: "R-A-152153-1",
+				renderTo: "yandex_rtb_R-A-152153-1",
+				async: true
+			});
+		});
+		t = d.getElementsByTagName("script")[0];
+		s = d.createElement("script");
+		s.type = "text/javascript";
+		s.src = "//an.yandex.ru/system/context.js";
+		s.async = true;
+		t.parentNode.insertBefore(s, t);
+	})(this, this.document, "yandexContextAsyncCallbacks");
+
+}
+
+before_load_functions.push('show_yandex_ad()');
+
+
+function collapse_wiki(a){
+	wiki = $(a).closest(".wiki-insert");
+	if ( !wiki.attr("h")  | wiki.attr("h")=="false" ){
+		wiki.attr("h", wiki.css("max-height"));	
+		wiki.css("overflow","visible");	
+		wiki.css("max-height","none");	
+	} else {
+		wiki.css("overflow","scroll");			
+		wiki.css("max-height", wiki.attr("h"));
+		wiki.attr("h", false);	
+	}
+	
+}
+
+function wiki_insert()
+{
+	$(".postbody .wiki-insert").each(
+		function() 
+		{
+			wiki_url = $(this).attr("rel").replace(/ /g,"_") ;
+			$(this).append("<div class='buttons'>"+
+				"<a href='http://www.cnc-club.ru/wiki/index.php?title="+wiki_url+"&action=edit'>Редактировать</a>" +
+				"<a href='#' class='collapse' onclick='collapse_wiki(this); return false;'>Развернуть</a>"+
+				"</div>"
+			);
+			d = $("<div class='content'></div>");
+			$(this).append(d);
+			$(d).load("//www.cnc-club.ru/wiki/index.php/"+wiki_url+" #content")
+
+		}
+	);
+
+	f = $("#page-body div")[0].className;
+	if (window.location.href.indexOf("/viewforum.php?")>0 && f.indexOf("f137")<0 & f.indexOf("f139")<0 & f.indexOf("f143")<0 & f.indexOf("f145")<0 ) // "станки"
+	{	
+		digest = $(".wiki-digest").first()
+		if (digest)
+			{	
+
+				wiki_url = "Дайджест форума "+$("h2.forum-title a").text();
+				$(digest).append("<div class='buttons'>"+
+					"<a href='http://www.cnc-club.ru/wiki/index.php?title="+wiki_url+"&action=edit'>Редактировать</a>" +
+					"<a href='#' class='collapse' onclick='collapse_wiki(this); return false;'>Развернуть</a>"+
+					"</div>"
+				);
+				d = $("<div class='content'></div>");
+				$(digest).append(d);
+				$(d).load("//www.cnc-club.ru/wiki/index.php?title="+encodeURI(wiki_url)+" #content")
+			}
+	}
+}
+
+before_load_functions.push('wiki_insert();');
+
+function anounce(){ return;  /// !!!!! ОТКЛЮЧЕНО  !!!!!
+	$(".ads").after(
+					"<div class='forum-anounce'>"+
+						"<h1>Ранняя весна в 2016</h1>"+
+						"<p>Многие из вас, наверно уже заметили, что в этом году авитаминоз застал всех врасплох на несколько месяцев раньше обычного. Настали теплые дни и из нор повылазили медведи, барсуки, тролли и прочие лесные жители.</p>"+
+						'<p><b>Настоятельная просьба ко всем участникам клуба <span class="del">"зверей с рук не кормить"</span>, "не разжигать", "не доводить до", и "быть терпимее" в этот морально неустойчивый период!</b></p>'+
+						"<p>Давайте вместе постараемся расслaбиться и наслаждаться этими первыми весенними деньками. Во избежание сами знаете чего!</p>"+
+						"<p>-- Администрация cnc-club.ru</p>"+
+					"</div>"
+				);
+				
+
+}
+
+before_load_functions.push('anounce();');
+
+
+/* -------- Moderators functions -------- */
+
+
+function get_put_id(l) // get post-user-thread id
+{
+	post = $(l).closest(".post");		
+	pid = post.attr("id").replace("p","");
+	uid = post.attr("class").match(/u([0-9]+)/i)[1]
+	tid = $("#page-body .tid").attr("class").match(/t([0-9]+)/i)[1];
+	return [pid,uid,tid]
+}
+
+function trash_post(l){
+	put = get_put_id(l);
+	title = $(".topic-title").text().replace(/'/g, "&#39;");
+	f = '<form method="post" id="mcp" action="/forum/mcp.php?t='+put[2]+'&i=main&mode=topic_view&action=split&start=0">'+
+	'<input type="hidden" name="post_id_list[]" value="'+put[0]+'">'+
+	'<input type="hidden" name="subject" value="'+title+'">'+
+	'<input type="hidden" name="to_forum_id" value="145">'+
+	'<input type="hidden" name="action" value="split_all">'+
+	'<input type="hidden" name="redirect" value="'+location.pathname+location.search+'">'+
+	'<input type="hidden" name="confirm_uid" value="2">'+
+	'<input type="hidden" name="mcp_topic_submit" value="Да" class="button1"></form>';
+	f = $(f);
+	f.submit();
+}
+
+function quarantine_topic(l){
+	put = get_put_id(l);
+
+	f = '<form method="post" id="mcp" action="/forum/mcp.php">'+
+	'<input type="hidden" name="topic_id_list[0]" value="'+put[2]+'">'+
+	'<input type="hidden" name="to_forum_id" value="138">'+
+	'<input type="hidden" name="action" value="move">'+
+	'<input type="hidden" name="redirect" value="'+location.pathname+location.search+'">'+
+	'<input type="hidden" name="confirm_uid" value="2">'+
+	'<input type="hidden" name="confirm" value="Да" class="button1"></form>';
+	f = $(f);
+	f.submit();
+}
+
+
+
+function moderator_functions(){
+	/* -------- Delete user link in profile -------- */
+	$("body.acp.section-memberlist a.ban").each(function(){
+		parent = $(this).parent();
+		url = $(this).attr("href");
+		sid = url.match(/sid=([^&=]+)/)[1];
+		username = $(".section-memberlist .details .username").text();
+		parent.append("[ <a href='/forum/adm/index.php?sid="+sid+"&i=prune&mode=users&username="+username+"'>Удалить пользователя</a> ]");
+	});
+	/* -------- Delete user link in profile -------- */
+	
+	/* -------- Moderator actions in posts -------- */
+	if ($(".quickmod").length > 0){
+	
+		$(".postbody .profile-icons").each(function (){
+				post = $(this).closest(".post");		
+				pid = post.attr("id").replace("p","");
+				uid = post.attr("class").match(/u([0-9]+)/i)[1]
+				$(this).prepend(
+					"<li class='post-quick-mod'> <a class='icon'></a> "+
+					"<ul class='mod-list'>"+
+					"<li><a onclick='trash_post(this);'>Пост в помойку</a></li>"+
+					"<li><a onclick='quarantine_topic(this);'>Тему в карантин</a></li>"+
+					""+
+					"</li>"
+				);
+			}	
+		);
+		$(".postbody .profile-icons a.icon").click(	
+			function()
+			{	
+				post = $(this).closest(".postbody");
+				$(".mod-list", post).toggle();
+			}
+		);
+	}
+	/* -------- Moderator actions in posts -------- */	
+}
+	
+before_load_functions.push('moderator_functions();');
+
+
+/* -------- Moderators functions -------- */
+
+/* -------- Newbie functions -------- */
+
+function newbie_functions(){
+	if ( window.location.href.search(/ucp.php\?i=pm/) >0 ){
+		$("body.gid7 #page-body").prepend("<div class='rules'><h1>Возможность отправлять Личные сообщения для новых пользователей ограничена!</h1>Чтобы обрести возможность отправлять личные сообщения необходимо набрать не менее 10 сообщений на форуме.<br>Если ваше имя пользователя перестало отображаться красным в списке пользователей - у вас должна появиться возможность отправлять личные сообщения.</div>");
+	}
+}
+
+before_load_functions.push('newbie_functions();');
+
+
+
+/* -------- Newbie functions -------- */
+
+
+/* -------- World of cnc functions -------- */
+/*
+function world_of_cnc_click(){
+
+	$.ajax({
+	     async: false,
+	     type: 'GET',
+	     url: "http://www.cnc-club.ru/forum/ucp.php?i=profile&mode=reg_details",
+	     success: function(data) {
+			email = $("#email",data).val();
+			username = $("#cp-main #ucp dd",data).first().text();
+			window.open('http://world-of-cnc.com/?&userLogin='+username+'&userEmail='+email);   
+	     }
+	});
+
+}
+
+function world_of_cnc(){
+
+	if ( window.location.href.indexOf("posting.php?mode=post&f=164") > 0 && 
+		 window.location.href.indexOf("&t=") < 0)
+	{
+		$("#postform").attr("action",$("#postform").attr("action")+"&nt=true");
+	}
+	if( window.location.href.indexOf("posting.php?mode=post&f=164") > 0 &&
+			$("#page-body .panel h2").text() == "Информация" && 
+			window.location.href.indexOf("&nt=true") > 0 )
+	{
+		window.stop(); //prevent redirect
+		console.log("ok let's add the button");
+		link = $("#page-body .panel a").attr("href");
+		$('body').append('<div id="word-of-cnc-popup"> <div class="content">Вы можете разместить свое обявление в системе world-of-cnc в упрощенном порядке. Для этого нажмите на кнопку ниже.'+ 
+		'<a id="wcnc-link" onclick="world_of_cnc_click();" "href="#"></a></div>(на сайт партнер будет передан Ваш логин и e-mail)<div class="refuse"><a href="'+link+'">Отказаться и вернуться на форум.</a></div></div>');
+	}
+
+}
+
+before_load_functions.push('world_of_cnc();');
+*/
+/* -------- World of cnc functions -------- */
+
+
+

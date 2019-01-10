@@ -1,0 +1,9 @@
+var dimensionValue = ($(".icon-ucp")[0]?"User":"Guest");
+
+ga('set', 'dimension1', dimensionValue);
+  ga('send', 'pageview', {
+	  'dimension1': ($(".icon-ucp")[0]?"User":"Guest"), 
+  	  'metric1': ($(".icon-ucp")[0]?"1":"0")
+  
+  
+  } );
