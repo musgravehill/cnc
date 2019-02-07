@@ -1,0 +1,7 @@
+DM542 driver
+12.8mA 5V  STEP 
+12.8mA 5V  DIR
+12.8mA 5V  EN
+390R inside?
+
+So, I need 470R pullup to H11L1, current H11L1 is 12V\470R = 26mA
