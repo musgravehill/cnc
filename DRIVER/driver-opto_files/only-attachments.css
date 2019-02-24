@@ -1,0 +1,14 @@
+
+.postprofile,
+.postprofile dt img,
+.postbody blockquote,
+.postbody>ul, 
+
+.postbody>.signature
+ {display:none}
+
+.postbody .content {font-size: 0px;}
+.postbody .content .inline-attachment {font-size: 10px;}
+.postbody>h3 {font-size:10px;}
+
+.back2top {clear: none;}
