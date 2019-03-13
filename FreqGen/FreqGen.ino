@@ -6,9 +6,9 @@ void setup() {
 
 void loop() {
   PORTB |= _BV(PB5); // HIGH
-  //delayMicroseconds(10);
-  delay(30);
+  delayMicroseconds(8);
+  //delay(30);
   PORTB &= ~ _BV(PB5); // LOW
-  //delayMicroseconds(10);
-  delay(30);
+  delayMicroseconds(8);
+  //delay(30);
 }

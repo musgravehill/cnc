@@ -5,3 +5,4 @@ DM542 driver
 390R inside?
 
 So, I need 470R pullup to H11L1, current H11L1 is 12V\470R = 26mA
+470R HEAT! 680R HEAT! 1k normal temperature.
