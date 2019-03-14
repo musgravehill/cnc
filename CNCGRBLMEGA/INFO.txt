@@ -17,6 +17,7 @@ DM542 driver
 1N4148                  30pcs
 FUSE 2A with wires
 100R ceramic 120mA 12V 2W 10pcs
+H11L1 20pcs
 
 TODO
 via на концевиках
