@@ -8,6 +8,8 @@ DM542 driver
 470R HEAT! 680R HEAT! 1k normal temperature.
 
 680R	681   	1206	11pcs
+820R	821		1206
+820R	821		1210BIG
 1k		102  	1206 	?pcs
 1k		102   	1210BIG	11pcs
 10nF			0603	40pcs
@@ -15,3 +17,6 @@ DM542 driver
 1N4148                  30pcs
 FUSE 2A with wires
 100R ceramic 120mA 12V 2W 10pcs
+
+концевик замкнут норм --- опта горит -- выход 0 
+концевик разорвало авари - опта не горит - выход 1 подтянут к +5
