@@ -7,7 +7,7 @@ DM542 driver
 
 470R HEAT! 680R HEAT! 1k normal temperature.
 
-FUSE 2A with wires
+
 1k		102   	1210BIG	11pcs
 820R	821		1210BIG 11pcs
 680R	681		1210BIG 11pcs
