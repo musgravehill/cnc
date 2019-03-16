@@ -1,0 +1,133 @@
+/* Karma Post Rating */
+.kpr_rating_image {
+	border-radius: 6px;
+	border: 1px solid gray;
+    color: #000000;
+	font-size: 15px;
+    font-weight: bold;
+    height: 40px;
+    line-height: 40px;
+    margin-bottom: 2px;
+    text-align: center;
+    width: 40px;
+	box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 5px rgba(161,142,016,0.6);
+}
+.kpr_topic_bad {
+	background-image: linear-gradient(bottom, rgb(208,26,60) 34%, rgb(250,52,90) 67%);
+	background-image: -o-linear-gradient(bottom, rgb(208,26,60) 34%, rgb(250,52,90) 67%);
+	background-image: -moz-linear-gradient(bottom, rgb(208,26,60) 34%, rgb(250,52,90) 67%);
+	background-image: -webkit-linear-gradient(bottom, rgb(208,26,60) 34%, rgb(250,52,90) 67%);
+	background-image: -ms-linear-gradient(bottom, rgb(208,26,60) 34%, rgb(250,52,90) 67%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.34, rgb(208,26,60)),
+		color-stop(0.67, rgb(250,52,90))
+	);
+}
+.kpr_topic_normal {
+	background-image: linear-gradient(bottom, rgb(122,146,252) 24%, rgb(159,176,255) 62%);
+	background-image: -o-linear-gradient(bottom, rgb(122,146,252) 24%, rgb(159,176,255) 62%);
+	background-image: -moz-linear-gradient(bottom, rgb(122,146,252) 24%, rgb(159,176,255) 62%);
+	background-image: -webkit-linear-gradient(bottom, rgb(122,146,252) 24%, rgb(159,176,255) 62%);
+	background-image: -ms-linear-gradient(bottom, rgb(122,146,252) 24%, rgb(159,176,255) 62%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.24, rgb(122,146,252)),
+		color-stop(0.62, rgb(159,176,255))
+	);
+}
+.kpr_topic_good {
+	background-image: linear-gradient(bottom, rgb(121,229,62) 39%, rgb(158,255,93) 70%);
+	background-image: -o-linear-gradient(bottom, rgb(121,229,62) 39%, rgb(158,255,93) 70%);
+	background-image: -moz-linear-gradient(bottom, rgb(121,229,62) 39%, rgb(158,255,93) 70%);
+	background-image: -webkit-linear-gradient(bottom, rgb(121,229,62) 39%, rgb(158,255,93) 70%);
+	background-image: -ms-linear-gradient(bottom, rgb(121,229,62) 39%, rgb(158,255,93) 70%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.39, rgb(121,229,62)),
+		color-stop(0.7, rgb(158,255,93))
+	);
+}
+.kpr_topic_very_good {
+	background-image: linear-gradient(bottom, rgb(192,22,218) 41%, rgb(231,49,255) 71%, rgb(255,79,255) 86%);
+	background-image: -o-linear-gradient(bottom, rgb(192,22,218) 41%, rgb(231,49,255) 71%, rgb(255,79,255) 86%);
+	background-image: -moz-linear-gradient(bottom, rgb(192,22,218) 41%, rgb(231,49,255) 71%, rgb(255,79,255) 86%);
+	background-image: -webkit-linear-gradient(bottom, rgb(192,22,218) 41%, rgb(231,49,255) 71%, rgb(255,79,255) 86%);
+	background-image: -ms-linear-gradient(bottom, rgb(192,22,218) 41%, rgb(231,49,255) 71%, rgb(255,79,255) 86%);
+	background-image: -webkit-gradient(
+	linear,
+		left bottom,
+		left top,
+		color-stop(0.41, rgb(192,22,218)),
+		color-stop(0.71, rgb(231,49,255)),
+		color-stop(0.86, rgb(255,79,255))
+	);
+}
+.kpr_topic_excellent {
+	background-image: linear-gradient(bottom, rgb(7,183,254) 18%, rgb(33,220,255) 59%);
+	background-image: -o-linear-gradient(bottom, rgb(7,183,254) 18%, rgb(33,220,255) 59%);
+	background-image: -moz-linear-gradient(bottom, rgb(7,183,254) 18%, rgb(33,220,255) 59%);
+	background-image: -webkit-linear-gradient(bottom, rgb(7,183,254) 18%, rgb(33,220,255) 59%);
+	background-image: -ms-linear-gradient(bottom, rgb(7,183,254) 18%, rgb(33,220,255) 59%);
+	background-image: -webkit-gradient(
+		linear,
+		left bottom,
+		left top,
+		color-stop(0.18, rgb(7,183,254)),
+		color-stop(0.59, rgb(33,220,255))
+	);
+}
+.kpr_rating_post {
+	font-size: 14px;
+	float: left;
+	margin-left: 4px;
+	border: 1px solid #9999AA;
+	border-radius: 6px;
+	padding: 0px 10px;
+	box-shadow:
+		0px 1px 3px rgba(000,000,000,0.5),
+		inset 0px 0px 5px rgba(161,142,016,0.6);
+	text-shadow:
+		0px -1px 3px rgba(255,255,255,0.8),
+		0px 1px 0px rgba(255,255,255,0.3);
+}
+.kpr_rating_list a {
+	padding-left: 4px !important;
+}
+.kpr_voted {
+	cursor: pointer;
+}
+ul.quickbuttons li .kpr_voted {
+	display: block;
+    float: left;
+    line-height: 18px;
+    padding-left: 4px !important;
+}
+#kpr_topic_stats {
+	float: left;
+	width: 49.5%;
+}
+#kpr_author_stats {
+	float: right;
+	width: 49.5%;
+}
+.kpr_opinion {
+	/* border: 1px solid #aaa; */
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 5px;
+	width: 98%;
+}
+.kpr_first_message_rating {
+	margin: 0 auto 0 2em;
+    text-align: center;
+	float: right;
+}

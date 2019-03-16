@@ -1,0 +1,117 @@
+$(function () {
+
+    //Удалить тег
+    $('body').on('click', 'ul.user-tag-list>li>img', function () {
+        var id_tag = $(this).data('tag-link-id');
+        
+        if(confirm('Удалить тег?')){
+            $.ajax({
+                type: "POST",
+                url: smf_scripturl + "?action=delusrtgajax",
+                data: {
+                    id_tag: id_tag
+                },
+                cache: false,
+                success: function (responce) {
+                    console.log(responce);
+                    closeUserTagModal();
+                }
+            });
+        }
+        
+        
+    });
+
+
+    //Добавляем новый тег - слушаем кнопку ОК
+    $('input[name=new_user_tag_sbm]').on('click', function () {
+
+        var id_member = $(this).data('id-member');
+        var tag_name = $('input[name=new_user_tag]').val();
+        
+        if(tag_name ===''){
+            return false;
+        }
+        
+
+        $.ajax({
+            type: "POST",
+            url: smf_scripturl + "?action=addusrtgajax",
+            data: {
+                id_member: id_member,
+                tag_name: tag_name
+            },
+            cache: false,
+            success: function (responce) {
+                console.log(responce);
+                closeUserTagModal();
+            }
+        });
+
+    });
+
+
+    //Теги этого пользователя - кнопка разворот спойлера
+    $('.user-tag-my>input').on('click', function () {
+
+
+		
+        var $pUserTag = $(this).parent().find('p');
+        var id_member = $(this).data('member-id');
+
+        if ($($pUserTag).is(":visible")) {
+            $pUserTag.hide();
+        } else {
+
+            $.ajax({
+                type: "POST",
+                url: smf_scripturl + "?action=usrtgajax",
+				dataType: 'html',
+                data: {
+                    id_member: id_member,
+                },
+                cache: false,
+                success: function (responce) {
+                    $pUserTag.html(responce);
+                }
+            });
+
+            $pUserTag.show();
+        }
+
+
+    });
+
+    //Открываем окошко
+    $('.user-tag-windows').on('click', function () {
+        console.log($(this).data('member-id'));
+
+        $('input[name=new_user_tag_sbm]').data('id-member', $(this).data('member-id'));
+        $('#user-tag-modal-bg').show();
+        $('#user-tag-modal').show();
+        $("html,body").css("overflow", "hidden");
+
+    });
+
+    //Закрываем окошко
+    $('#user-tag-modal-bg').on('click', function () {
+        closeUserTagModal();
+    });
+
+    //Методы для закрытия
+    function closeUserTagModal() {
+        $('input[name=new_user_tag_sbm]').data('id-member', 0);
+        $('input[name=new_user_tag]').val('');
+        $('#user-tag-modal-bg').hide();
+        $('#user-tag-modal').hide();
+        $("html,body").css("overflow", "auto");
+        $('.user-tag-my>p').html('');
+        $('.user-tag-my>p').hide();
+
+    }
+
+    $('#user-tag-modal').on('click', function () {
+
+    });
+
+});

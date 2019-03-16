@@ -1,0 +1,718 @@
+ul.bbc_list li {
+    margin: 5px 0px;
+}
+
+/* Styles for the general looks for the Curve theme.
+------------------------------------------------------- */
+
+.greeting_avatar img {
+	max-height: 100px;
+	width: auto;
+}
+
+.logo {
+    float: left;
+    padding: 0px 0px 0px 40px;
+}
+
+.logo img {
+    max-height: 100px;
+    max-width: 100%;
+}
+
+.new-linktree {
+    background-color: rgb(238, 238, 238);
+    color: #2e3641;
+}
+
+.new-linktree a {
+    color: #2e3641;
+}
+
+.header-main {
+    border-bottom: 1px solid #ccc;
+	overflow: hidden;
+}
+
+.new-linktree {
+    background-color: rgb(52, 62, 74);
+    color: #eeeeee;
+    margin-top: 0px;
+
+}
+.new-linktree a {
+    color: #eeeeee;
+}
+.new-linktree {
+    background-color: #4b914b;
+    color: #eeeeee;
+}
+
+#content_section {
+    background: #FFFFFF;
+    padding: 0px 40px;
+}
+.new-linktree {
+    background-color: #ffffff;
+    color: #000;
+}
+.new-linktree a {
+    color: #000;
+}
+
+/* для меню 
+.table_list .dropdown {
+    position: initial !important;
+}
+	*/
+
+/*
+.table_list .dropdown-menu {
+    position: initial !important;
+    display: block !important;
+}
+*/
+
+
+/* погнали */
+
+body { 
+		
+	font: 85%/140% 'PT Sans', sans-serif; 
+	/* font: 85%/140% 'Open Sans', sans-serif; */
+	color: #000;
+}
+.windowbg { color: #000;}
+
+table.table_list tbody.content td.lastpost { width: 20%; padding: 0.7em;}
+table.table_list tbody.content td.stats { width: 8%; }
+
+
+td { color: #000;}
+a:link, a:visited { color:#284878;}
+
+.child-header { display: none; }
+/* .dropdown .dropdown-toggle { display: none;} */
+
+.board-bg { background: #E2F0F8; }
+.icon.board-bg { background: #EFFAFF; }
+.stats.board-bg { background: #EFFAFF; }
+
+/*
+.dropdown-menu { min-width: 100%; background: #DEE8F0; box-shadow: none; border-radius: 0px; border-left: 0px; border-right: 0px; border-bottom: 0px;}
+
+table.table_list td { padding: 0px; }
+*/
+
+.info.board-bg p { display: block; padding: 5px 10px 10px 10px;}
+.info.board-bg p.moderators { display: block; clear: both; padding: 0px 10px 10px 10px;}
+
+.table_list tbody.content td.info a.subject { color: #284878; padding: 10px 10px 0px 10px; display: block; font-weight: 700; font-size: 120%;}
+
+.content tr { border: 1px solid #adadad;}
+.content .tablepadding tr { border: none; display: table; width: 100%}
+
+/*
+.tablepadding { padding: 10px; display: block;}
+.tablepadding tbody { width: 100%; display: table;}
+.tablepadding .subtheme { padding: 0.2em 0.7em 0.2em 0;}
+*/
+
+/*.subtheme { display: inline-block;}*/
+
+.roundframe { background: #E2F0F8; padding: 0px; border: 1px solid #adadad;}
+
+
+h3.catbg, div.cat_bar, div.title_barIC, div.title_barIC h4.titlebg { background: #357f34; /* Old browsers */
+background: -moz-linear-gradient(top, #357f34 0%, #88bf86 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(top, #357f34 0%,#88bf86 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to bottom, #357f34 0%,#88bf86 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#357f34', endColorstr='#88bf86',GradientType=0 ); /* IE6-9 */ }
+
+.windowbg { background-color: #E2F0F8;}
+.windowbg2 { background-color: #EFFAFF;}
+
+.stickybg { background:#DEE8F0;}
+.stickybg2 { background:#DEE8F0;}
+
+.subject.windowbg2 { padding: 15px 10px; }
+.subject.windowbg { padding: 10px; }
+.subject.stickybg { padding: 15px 10px; }
+.subject.stickybg2 { padding: 15px 10px; }
+
+.subject .preview { font-size: 1.1em;}
+
+.author.windowbg { text-align: center; }
+.author.stickybg { text-align: center; }
+
+.table_grid .icon2 { width: 4%; }
+
+
+
+.main-sidebar { background: #fafafa; color: #000;}
+.main-sidebar .user-panel { color: #000; }
+.sidebar-menu li > a { color: #000; border-bottom: 1px solid #ccc;}
+.sidebar-menu > li > a > .fa { color:#ccc;}
+
+
+.header-main { 
+	height: auto; 
+	min-height: 120px; 
+	background: #E2F0F8; 
+	border-top: 0px solid #357f34; 
+}
+
+#footer_section { padding: 0px; }
+#footer_section .footer-coll { display: none;}
+
+
+
+/*ul.poster-icons li { background-color: transparent; border: none;}
+ul.poster-icons-second li { background-color: transparent; border: none;}
+a.poster-more { background-color: transparent; border: none;}
+*/
+
+/*.signature { display: none ;}*/
+
+blockquote.bbc_standard_quote { 
+	font-size: 100%; 
+	background: #d7daec; 
+	border-top: 1px solid #666; 
+	border-bottom: 1px solid #666;
+	padding: 2px 10px;
+}
+
+.codeheader, .quoteheader { 
+	background: transparent;
+}
+
+#forumposts .modified { 
+	margin-left: 0px; margin-top: 15px;
+}
+
+.navigate_section ul { 
+	padding: 0 40px; 
+}
+
+.content-wrapper { 
+	background: #fff;
+}
+
+.lightgreenline { 
+	border-top: 2px solid #fff; 
+	border-bottom: 2px solid #4d914e; 
+	display: table; 
+	width: 100%; 
+	clear:both; 
+	padding: 0 40px; 
+	background: #b9d1b9; /* Old browsers */
+	background: -moz-linear-gradient(top, #b9d1b9 1%, #e8f4e8 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #b9d1b9 1%,#e8f4e8 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, #b9d1b9 1%,#e8f4e8 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b9d1b9', endColorstr='#e8f4e8',GradientType=0 ); /* IE6-9 */
+}
+
+.lgl_left { 
+	padding: 5px 0; 
+	vertical-align:middle; 
+	display: table-cell;
+}
+.lgl_right { 
+	padding: 5px 0; 
+	vertical-align:middle; 
+	display: table-cell;
+}
+
+
+.poster li.avatar img { 
+	height: auto;
+	max-width: 125px;
+}
+
+#forumposts .signature { 
+    margin: 1em 0 0 0;
+    padding: 0px 5px 0px 0px;
+}
+
+#myavatar { 
+	float: right; 
+	padding: 0.7em 40px 0.7em 0.7em;
+}
+
+ul.reset { 
+	text-align: right; 
+	padding: 0.4em 4px 0.7em 0.7em; 
+}
+
+
+.navigate_section ul li a { 
+	font-weight: bold; 
+}
+
+.content td { 
+	border: 1px solid #adadad;
+}
+
+.content .tablepadding td { 
+	border: none;
+}
+
+#messageindex { 
+	border: 3px double #aeaeae;
+}
+
+ul.poster-icons li { 
+	width: 45px; height: 45px; text-align: center;
+}
+
+.poster-name { 
+	text-align: left; 
+}
+
+.membergroup { 
+	text-align: left; 
+}
+
+
+/* The main menu. */
+.main_menu {
+    padding: 0 40px;
+    margin-top: 0px;
+}
+
+.main_menu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_first.gif) no-repeat bottom left;
+    padding-left: 10px;
+}
+
+.main_menu li {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.main_menu li a:link, .main_menu li a:visited
+{
+    float: left;
+    display: block;
+    color: #fff;
+    font-size: 0.8em;
+    text-transform: uppercase;
+}
+.main_menu li a:hover
+{
+    color: #d0ffd0;
+    text-decoration: none;
+}
+.main_menu li a span
+{
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_back.gif) repeat-x bottom left;
+    display: block;
+    padding: 0.1em 0.5em 0.5em 0.5em;
+}
+.main_menu li.last a span
+{
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_last.gif) no-repeat bottom right;
+    padding: 0.1em 1em 0.5em 0.5em;
+}
+.main_menu li.active a span em
+{
+    padding: 0.1em 0.5em 0.5em 0.5em;
+    display: block;
+    font-style: normal;
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_active_back.gif) repeat-x bottom right;
+}
+.main_menu li.active a span
+{
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_active_first.gif) no-repeat bottom left;
+    padding: 0 0 0 8px;
+}
+.main_menu li.last.active
+{
+    float: left;
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_last.gif) no-repeat bottom right;
+    padding: 0 8px 0 0;
+}
+/* IE6 doesn't support multiple class selectors */
+.main_menu li.lastactive
+{
+    float: left;
+    padding: 0 8px 0 0;
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_last.gif) no-repeat bottom right;
+}
+.main_menu li.active a
+{
+    background: url(//electrotransport.ru/ussr/Themes/green-energy/images/maintab_active_last.gif) no-repeat bottom right;
+    padding-right: 8px;
+}
+
+ul.greeting_block {
+	display: block;
+	float: right;
+	font-size: 13px;
+    line-height: 17px;
+	
+}
+
+div.quick_nav {
+
+    background: #357f34;
+    text-align: right;
+    margin: 0px;
+    padding: 3px;
+    color: #f9f9f9;
+	height: 40px;
+	line-height: 34px;
+} 
+
+
+div.quick_nav span {
+	display: none;
+	margin-right: 10px;
+}
+
+div.quick_nav span a {
+    color: #f9f9f9;
+}
+
+
+.close-sidebar a { 
+	left: 0; right: auto;
+}
+
+p.avatar {
+	display: block;
+	margin: 8px 8px 8px 10px;
+	float: right;
+}
+
+
+
+.main-sidebar, .left-side {
+    -webkit-transform: translate(0px, 0);
+    -ms-transform: translate(0px, 0);
+    -o-transform: translate(0px, 0);
+    transform: translate(0px, 0);
+}
+
+.sidebar-open .content-wrapper, .sidebar-open .right-side, .sidebar-open .main-footer {
+    -webkit-transform: translate(0px, 0);
+    -ms-transform: translate(0px, 0);
+    -o-transform: translate(0px, 0);
+    transform: translate(0px, 0);
+}
+
+.main-sidebar {
+	display: none;
+}
+
+
+.new-linktree {
+    height: auto;
+}
+.navigate_section ul li {
+    display: initial;
+}
+
+#guest_form {
+	display: block;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.navigate_section ul li {
+    font-size: 12px;
+	line-height: 22px;
+}
+
+
+
+
+
+/* Styles for the standard button lists.
+------------------------------------------------------- */
+
+.buttonlistOldStyle {
+	float: right;
+}
+
+.buttonlistOldStyle_bottom {
+	float: right;
+	
+}
+
+.buttonlistOldStyle ul
+{
+	background: url(../images/maintab_first.gif) no-repeat scroll left bottom;
+	padding: 0 0 0 10px;
+}
+.buttonlistOldStyle ul li, .buttonlistOldStyle_bottom ul li
+{
+	display: inline;
+}
+.buttonlistOldStyle ul li a, .buttonlistOldStyle_bottom ul li a
+{
+	float: left;
+	display: block;
+	color: #fff;
+	font-size: 0.8em;
+	text-transform: uppercase;
+	text-decoration: none;
+}
+.buttonlistOldStyle ul li a:hover, .buttonlistOldStyle_bottom ul li a:hover
+{
+	color: #d0ffd0;
+}
+.buttonlistOldStyle ul li a span
+{
+	background: url(../images/maintab_back.gif) repeat-x bottom left;
+	display: block;
+	padding: 0.1em 0.5em 0.5em 0.5em;
+}
+.buttonlistOldStyle ul li.last a span
+{
+	background: url(../images/maintab_last.gif) no-repeat bottom right;
+	padding: 0.1em 1em 0.5em 0.5em;
+}
+.buttonlistOldStyle ul li.active a span em
+{
+	padding: 0.1em 0.5em 0.5em 0.5em;
+	display: block;
+	font-style: normal;
+	background: url(../images/maintab_active_back.gif) repeat-x bottom right;
+}
+.buttonlistOldStyle ul li.active a span
+{
+	background: url(../images/maintab_active_first.gif) no-repeat bottom left;
+	padding: 0 0 0 8px;
+}
+.buttonlistOldStyle ul li.lastactive
+{
+	float: left;
+	background: url(../images/maintab_last.gif) no-repeat bottom right;
+	padding: 0 8px 0 0;
+}
+.buttonlistOldStyle ul li.active a
+{
+	background: url(../images/maintab_active_last.gif) no-repeat bottom right;
+	padding-right: 8px;
+}
+/* For links that are basically submit buttons. */
+.buttonlistOldStyle_submit
+{
+	background: transparent;
+	color: #fff;
+	text-transform: uppercase;
+	vertical-align: top;
+	text-decoration: none;
+	font-size: 9px;
+	border: 0;
+}
+.buttonlistOldStyle_submit:hover
+{
+	color: #d0ffd0;
+}
+/* ..for the "bottom" menu */
+.buttonlistOldStyle_bottom ul
+{
+	background: url(../images/mirrortab_first.gif) no-repeat scroll left top;
+	padding: 0 0 0 10px!important;
+	clear: both;
+    float: right;
+}
+.buttonlistOldStyle_bottom ul li a span
+{
+	background: url(../images/mirrortab_back.gif) repeat-x top left;
+	display: block;
+	padding: 0.4em 0.5em 0.2em 0.5em;
+}
+.buttonlistOldStyle_bottom ul li.last a span
+{
+	background: url(../images/mirrortab_last.gif) no-repeat top right;
+	padding: 0.4em 1em 0.2em 0.5em;
+}
+.buttonlistOldStyle_bottom ul li.active a span em
+{
+	padding: 0.4em 0.5em 0.2em 0.5em;
+	display: block;
+	font-style: normal;
+	background: url(../images/mirrortab_active_back.gif) repeat-x top right;
+}
+.buttonlistOldStyle_bottom ul li.active a span
+{
+	background: url(../images/mirrortab_active_first.gif) no-repeat top left;
+	padding: 0 0 0 8px;
+}
+.buttonlistOldStyle_bottom ul li.lastactive
+{
+	float: left;
+	background: url(../images/mirrortab_last.gif) no-repeat top right;
+	padding: 0 8px 0 0;
+}
+.buttonlistOldStyle_bottom ul li.active a
+{
+	background: url(../images/mirrortab_active_last.gif) no-repeat top right;
+	padding-right: 8px;
+}
+
+
+
+.pagesection {
+    padding: 0.2em 0.2em 0 0.2em;
+}
+
+
+.navigate_section ul li a {
+    color: #000;
+}
+
+.button_submit, .button_reset {
+    padding: 0px 16px;
+	height: 31px;
+}
+
+select[name="search_selection"]{
+	height: 31px;
+}
+
+@media screen and (min-width: 768px) {
+	.main-sidebar { display: none;}
+	.content-wrapper { margin-left: 0px; }
+}
+
+
+
+@media screen and (max-width: 768px) {
+	
+	.subject.windowbg2 {
+		padding: 7px 5px;
+	}
+	
+	.subject p {
+		float: right;
+	}
+
+	.icon2 {
+		display: none;
+	}
+
+	.kpr_stats {
+		display: none;
+	}
+
+    .main_menu { 
+		display: none;
+	}
+    .lgl_right { 
+		display: none;
+	}
+    .header-main { 
+		height: auto; 
+		/* min-height: 25vw; */
+	}
+    #content_section { 
+		padding: 0 5px;
+	}
+    .header-main ul.reset { 
+		display: none; 
+		paddng: 0.4em 0.7em 0.7em 0.7em;
+	}
+    #myavatar { 
+		display: none;
+	}
+    .avatar { 
+		text-align: center;
+	}
+   .poster-name { 
+	   text-align: center; 
+   }
+    .membergroup { 
+		text-align: center;
+	}
+	.sidebar-menu .dropdown .dropdown-toggle { 
+		display: block;
+	}
+	.inner { 
+		text-align: justify; 
+	}
+	
+	.header-main {
+		border-top: none;
+	}
+	
+	div.quick_nav span {
+		display: block;
+	} 
+	.logo {
+		text-align: center;
+		width: 100%;
+	}
+	
+	.navigate_section ul {
+		padding: 0px;
+	}
+	
+	table.table_list tbody.content td.icon {
+		display: none;
+	}
+	
+	td.info {
+		border: 3px double #aeaeae;
+	}
+	
+
+	
+}
+
+@media screen and (max-width: 992px) {
+	
+	.buttonlistOldStyle>ul {
+		padding: 0;
+	}
+	.logo {
+		float: left;
+		padding: 0px 0px 10px 8px;
+		text-align: center;
+	}
+	.logo img {
+		margin-left: 0px;
+	}
+	
+	.main_menu {
+		display: none;
+	}
+		
+	.close-sidebar a {
+		color: #fff;
+	}
+	
+}
+
+
+@media screen and (max-width: 720px) {
+	
+	.buttonlistOldStyle_bottom, .buttonlistOldStyle {
+		display: none;
+	}
+	
+}
+
+@media screen and (min-width: 720px) {
+	
+	.buttonlist {
+		display: none;		
+	}
+	#display_jump_to {
+		margin-top: 0px;
+	}
+	
+}
+
+
+
+#recent .buttonlist {
+	display: block;
+}

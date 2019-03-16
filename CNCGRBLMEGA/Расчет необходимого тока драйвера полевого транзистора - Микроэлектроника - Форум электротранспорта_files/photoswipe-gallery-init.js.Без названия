@@ -1,0 +1,153 @@
+var initPhotoSwipeFromDOM = function(gallerySelector) {
+	var skips = [];
+
+	var parseThumbnailElements = function(el) {
+        var items = [],
+            linkEl,
+            item;
+
+        for(var i = 0; i < galleryLen; i++) {
+			linkEl = galleryElements[i].parentNode; 
+			if(linkEl.tagName=='A'){// <a> element
+	            item = {src: linkEl.getAttribute('href'), w:linkEl.children[0].offsetWidth*1.5, h:linkEl.children[0].offsetHeight*1.5};
+
+				if(skips.indexOf(i)!=-1) continue;
+
+	            if(linkEl.children.length > 0) item.msrc = linkEl.children[0].src;
+			}else{// <img> element
+				linkEl = galleryElements[i];
+				item = {src: linkEl.src, msrc: linkEl.src, w:linkEl.offsetWidth, h:linkEl.offsetHeight};
+			}
+
+            item.el = linkEl;
+            items.push(item);
+        }
+
+        return items;
+    };
+
+    // triggers when user clicks on thumbnail
+    var onThumbnailsClick = function(e) {
+		if(e == null) return;
+        e = e || window.event;
+        e.preventDefault ? e.preventDefault() : e.returnValue = false;
+		var clickedListItem = e.target.parentNode;
+		if(clickedListItem.tagName!='A') clickedListItem = e.target;
+
+        var nodeIndex = 0,
+            index, linkEl;
+			
+        for (var i = 0; i < galleryLen; i++) {
+			if(skips.indexOf(i)!=-1) continue;
+			
+			if(clickedListItem.tagName!='A') linkEl=galleryElements[i]; else linkEl=galleryElements[i].parentNode;
+		
+            if(linkEl.nodeType !== 1) { 
+                continue;
+            }
+
+            if(linkEl === clickedListItem) {
+                index = nodeIndex;
+                break;
+            }
+            nodeIndex++;
+        }
+
+        if(index >= 0) {
+            openPhotoSwipe( index, gallery );
+        }
+        return false;
+    };
+
+    var openPhotoSwipe = function(index, galleryElement, disableAnimation) {
+        var pswpElement = document.querySelectorAll('.pswp')[0],
+            gallery,
+            options,
+            items;
+
+        items = parseThumbnailElements(galleryElement);
+		
+        options = {
+            galleryUID: galleryElement.getAttribute('data-pswp-uid'),
+
+            getThumbBoundsFn: function(index) {
+                var thumbnail; 
+				if(items[index].el.tagName=='A') thumbnail = items[index].el.getElementsByTagName('img')[0]; // find thumbnail
+				else thumbnail = items[index].el;
+                var pageYScroll = window.pageYOffset || document.documentElement.scrollTop, rect = thumbnail.getBoundingClientRect(); 
+
+                return {x:rect.left, y:rect.top + pageYScroll, w:rect.width};
+            }
+
+        };
+
+        options.index = parseInt(index, 10);
+
+        if( isNaN(options.index) ) {
+            return;
+        }
+
+        if(disableAnimation) {
+            options.showAnimationDuration = 0;
+        }
+
+        // Pass data to PhotoSwipe and initialize it
+        gallery = new PhotoSwipe( pswpElement, PhotoSwipeUI_Default, items, options);
+		gallery.listen('imageLoadComplete', function(index, item) {
+			var img = new Image(); 
+			img.onload = function() {
+				if(item.w != this.width && item.h != this.height){
+					item.w = this.width;
+					item.h = this.height;
+					gallery.invalidateCurrItems();
+					gallery.updateSize(true);
+				}
+			}
+			img.src = item.src;
+		});
+        gallery.init();
+    };
+	
+	var defWidth = 640, defHeight = 360;
+	
+	var gallery = document.getElementById('forumposts');
+	if(window.location.search.indexOf('pm')!=-1){
+		gallery = document.getElementById('personal_messages');
+	}
+	if(gallery!=null){
+		gallery.setAttribute('data-pswp-uid', 1);
+		var galleryElements = document.querySelectorAll('.attachments a > img, .post img.bbc_img, .post img.attach_thumb, .personalmessage img.bbc_img, .personalmessage img.attach_thumb');
+		var galleryLen = galleryElements.length;
+		for(var i = galleryLen-1; i>=0; i--) {
+			if(galleryElements[i].parentNode.tagName=='A'){
+				if(!check_(galleryElements[i].parentNode.getAttribute('href'), galleryElements[i].src)){
+					skips.push(i);
+					continue;
+				}
+				galleryElements[i].parentNode.onclick = onThumbnailsClick;
+			}else
+				galleryElements[i].onclick = onThumbnailsClick;
+	    }
+	}
+
+	if(window.location.search.indexOf('showimgup')!=-1){
+		gallery = document.getElementById('content_section');
+		gallery.setAttribute('data-pswp-uid', 1);
+		var galleryElements = document.querySelectorAll('.imgup_element > a > img');
+		var galleryLen = galleryElements.length;
+		for(var i = 0, l = galleryLen; i < l; i++) {
+			galleryElements[i].parentNode.onclick = onThumbnailsClick;
+	    }
+	}
+	
+	function check_(href, src){
+		if(href.indexOf('img-fotki')!=-1) return true;
+		if(href.indexOf(';attach')!=-1 && src.indexOf(';image')==-1) return false;
+		if(src.indexOf('widget')!=-1) return false;
+		if(src.indexOf(';image')==-1 && href.match(/\.(jpeg|jpg|gif|png)$/) == null) return false;
+		return true;
+	}
+};
+
+// execute above function
+initPhotoSwipeFromDOM();

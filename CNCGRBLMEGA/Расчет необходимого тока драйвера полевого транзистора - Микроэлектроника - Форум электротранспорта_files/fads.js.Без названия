@@ -1,0 +1,1005 @@
+var ready = (function () {
+
+    var readyList,
+            DOMContentLoaded,
+            class2type = {};
+    class2type["[object Boolean]"] = "boolean";
+    class2type["[object Number]"] = "number";
+    class2type["[object String]"] = "string";
+    class2type["[object Function]"] = "function";
+    class2type["[object Array]"] = "array";
+    class2type["[object Date]"] = "date";
+    class2type["[object RegExp]"] = "regexp";
+    class2type["[object Object]"] = "object";
+
+    var ReadyObj = {
+        // Is the DOM ready to be used? Set to true once it occurs.
+        isReady: false,
+        // A counter to track how many items to wait for before
+        // the ready event fires. See #6781
+        readyWait: 1,
+        // Hold (or release) the ready event
+        holdReady: function (hold) {
+            if (hold) {
+                ReadyObj.readyWait++;
+            } else {
+                ReadyObj.ready(true);
+            }
+        },
+        // Handle when the DOM is ready
+        ready: function (wait) {
+            // Either a released hold or an DOMready/load event and not yet ready
+            if ((wait === true && !--ReadyObj.readyWait) || (wait !== true && !ReadyObj.isReady)) {
+                // Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+                if (!document.body) {
+                    return setTimeout(ReadyObj.ready, 1);
+                }
+
+                // Remember that the DOM is ready
+                ReadyObj.isReady = true;
+                // If a normal DOM Ready event fired, decrement, and wait if need be
+                if (wait !== true && --ReadyObj.readyWait > 0) {
+                    return;
+                }
+                // If there are functions bound, to execute
+                readyList.resolveWith(document, [ReadyObj]);
+
+                // Trigger any bound ready events
+                //if ( ReadyObj.fn.trigger ) {
+                //    ReadyObj( document ).trigger( "ready" ).unbind( "ready" );
+                //}
+            }
+        },
+        bindReady: function () {
+            if (readyList) {
+                return;
+            }
+            readyList = ReadyObj._Deferred();
+
+            // Catch cases where $(document).ready() is called after the
+            // browser event has already occurred.
+            if (document.readyState === "complete") {
+                // Handle it asynchronously to allow scripts the opportunity to delay ready
+                return setTimeout(ReadyObj.ready, 1);
+            }
+
+            // Mozilla, Opera and webkit nightlies currently support this event
+            if (document.addEventListener) {
+                // Use the handy event callback
+                document.addEventListener("DOMContentLoaded", DOMContentLoaded, false);
+                // A fallback to window.onload, that will always work
+                window.addEventListener("load", ReadyObj.ready, false);
+
+                // If IE event model is used
+            } else if (document.attachEvent) {
+                // ensure firing before onload,
+                // maybe late but safe also for iframes
+                document.attachEvent("onreadystatechange", DOMContentLoaded);
+
+                // A fallback to window.onload, that will always work
+                window.attachEvent("onload", ReadyObj.ready);
+
+                // If IE and not a frame
+                // continually check to see if the document is ready
+                var toplevel = false;
+
+                try {
+                    toplevel = window.frameElement == null;
+                } catch (e) {
+                }
+
+                if (document.documentElement.doScroll && toplevel) {
+                    doScrollCheck();
+                }
+            }
+        },
+        _Deferred: function () {
+            var // callbacks list
+                    callbacks = [],
+                    // stored [ context , args ]
+                    fired,
+                    // to avoid firing when already doing so
+                    firing,
+                    // flag to know if the deferred has been cancelled
+                    cancelled,
+                    // the deferred itself
+                    deferred = {
+
+                        // done( f1, f2, ...)
+                        done: function () {
+                            if (!cancelled) {
+                                var args = arguments,
+                                        i,
+                                        length,
+                                        elem,
+                                        type,
+                                        _fired;
+                                if (fired) {
+                                    _fired = fired;
+                                    fired = 0;
+                                }
+                                for (i = 0, length = args.length; i < length; i++) {
+                                    elem = args[ i ];
+                                    type = ReadyObj.type(elem);
+                                    if (type === "array") {
+                                        deferred.done.apply(deferred, elem);
+                                    } else if (type === "function") {
+                                        callbacks.push(elem);
+                                    }
+                                }
+                                if (_fired) {
+                                    deferred.resolveWith(_fired[ 0 ], _fired[ 1 ]);
+                                }
+                            }
+                            return this;
+                        },
+
+                        // resolve with given context and args
+                        resolveWith: function (context, args) {
+                            if (!cancelled && !fired && !firing) {
+                                // make sure args are available (#8421)
+                                args = args || [];
+                                firing = 1;
+                                try {
+                                    while (callbacks[ 0 ]) {
+                                        callbacks.shift().apply(context, args);//shifts a callback, and applies it to document
+                                    }
+                                } finally {
+                                    fired = [context, args];
+                                    firing = 0;
+                                }
+                            }
+                            return this;
+                        },
+
+                        // resolve with this as context and given arguments
+                        resolve: function () {
+                            deferred.resolveWith(this, arguments);
+                            return this;
+                        },
+
+                        // Has this deferred been resolved?
+                        isResolved: function () {
+                            return !!(firing || fired);
+                        },
+
+                        // Cancel
+                        cancel: function () {
+                            cancelled = 1;
+                            callbacks = [];
+                            return this;
+                        }
+                    };
+
+            return deferred;
+        },
+        type: function (obj) {
+            return obj == null ?
+                    String(obj) :
+                    class2type[ Object.prototype.toString.call(obj) ] || "object";
+        }
+    }
+// The DOM ready check for Internet Explorer
+    function doScrollCheck() {
+        if (ReadyObj.isReady) {
+            return;
+        }
+
+        try {
+            // If IE is used, use the trick by Diego Perini
+            // http://javascript.nwbox.com/IEContentLoaded/
+            document.documentElement.doScroll("left");
+        } catch (e) {
+            setTimeout(doScrollCheck, 1);
+            return;
+        }
+
+        // and execute any waiting functions
+        ReadyObj.ready();
+    }
+// Cleanup functions for the document ready method
+    if (document.addEventListener) {
+        DOMContentLoaded = function () {
+            document.removeEventListener("DOMContentLoaded", DOMContentLoaded, false);
+            ReadyObj.ready();
+        };
+
+    } else if (document.attachEvent) {
+        DOMContentLoaded = function () {
+            // Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
+            if (document.readyState === "complete") {
+                document.detachEvent("onreadystatechange", DOMContentLoaded);
+                ReadyObj.ready();
+            }
+        };
+    }
+    function ready(fn) {
+        // Attach the listeners
+        ReadyObj.bindReady();
+
+        var type = ReadyObj.type(fn);
+
+        // Add the callback
+        readyList.done(fn);//readyList is result of _Deferred()
+    }
+    return ready;
+})();
+
+
+ready(function () {
+
+    /*!
+     * jQuery TextChange Plugin
+     * http://www.zurb.com/playground/jquery-text-change-custom-event
+     *
+     * Copyright 2010, ZURB
+     * Released under the MIT License
+     */ (function (a) {
+        a.event.special.textchange = {setup: function () {
+                a(this).data("lastValue", this.contentEditable === "true" ? a(this).html() : a(this).val());
+                a(this).bind("keyup.textchange", a.event.special.textchange.handler);
+                a(this).bind("cut.textchange paste.textchange input.textchange", a.event.special.textchange.delayedHandler)
+            }, teardown: function () {
+                a(this).unbind(".textchange")
+            }, handler: function () {
+                a.event.special.textchange.triggerIfChanged(a(this))
+            }, delayedHandler: function () {
+                var c = a(this);
+                setTimeout(function () {
+                    a.event.special.textchange.triggerIfChanged(c)
+                },
+                        25)
+            }, triggerIfChanged: function (a) {
+                var b = a[0].contentEditable === "true" ? a.html() : a.val();
+                b !== a.data("lastValue") && (a.trigger("textchange", [a.data("lastValue")]), a.data("lastValue", b))
+            }};
+        a.event.special.hastext = {setup: function () {
+                a(this).bind("textchange", a.event.special.hastext.handler)
+            }, teardown: function () {
+                a(this).unbind("textchange", a.event.special.hastext.handler)
+            }, handler: function (c, b) {
+                b === "" && b !== a(this).val() && a(this).trigger("hastext")
+            }};
+        a.event.special.notext = {setup: function () {
+                a(this).bind("textchange",
+                        a.event.special.notext.handler)
+            }, teardown: function () {
+                a(this).unbind("textchange", a.event.special.notext.handler)
+            }, handler: function (c, b) {
+                a(this).val() === "" && a(this).val() !== b && a(this).trigger("notext")
+            }}
+    })(jQuery);
+
+    jQuery.fn.ForceNumericOnly = function ()
+    {
+        return this.each(function ()
+        {
+            $(this).keydown(function (e)
+            {
+                var key = e.charCode || e.keyCode || 0;
+                // Разрешаем backspace, tab, delete, стрелки, обычные цифры и цифры на дополнительной клавиатуре
+                return (
+                        key == 8 ||
+                        key == 9 ||
+                        key == 46 ||
+                        (key >= 37 && key <= 40) ||
+                        (key >= 48 && key <= 57) ||
+                        (key >= 96 && key <= 105));
+            });
+        });
+    };
+
+    console.log(smf_scripturl);
+
+    $('#location').on('textchange', function () {
+        console.log($(this).val());
+        if ($(this).val() === '') {
+            $("input[name=country_id]").val('0');
+            $("input[name=region_id]").val('0');
+            $("input[name=city_id]").val('0');
+        }
+    });
+
+
+    //Выбор локации
+    $("input[name=query]").autocomplete({
+        source: smf_scripturl + "?action=fadssearch;sa=get_title_ajax",
+        select: function (event, ui) {
+        },
+        response: function (event, ui) {
+            $.each(ui.content, function (index, val) {
+                ui.content[index]["label"] = val.title;
+                ui.content[index]["value"] = val.title;
+
+            });
+
+            console.log(ui);
+            return ui;
+        }
+    });
+
+    //Ищем локацию..
+    $("#location").autocomplete({
+        source: smf_scripturl + "?action=fadssearch;sa=get_location_ajax",
+        response: function (event, ui) {
+            $.each(ui.content, function (index, val) {
+                var name = val.name;
+                var country_id = val.country_id;
+                var region_id = val.region_id;
+                var city_id = val.city_id;
+                ui.content[index]["label"] = name;
+                ui.content[index]["value"] = name;
+                ui.content[index]["country_id"] = country_id;
+                ui.content[index]["region_id"] = region_id;
+                ui.content[index]["city_id"] = city_id;
+            });
+
+//            console.log(ui);
+            return ui;
+        },
+        select: function (event, ui) {
+
+            $("input[name=country_id]").val(ui.item.country_id);
+            $("input[name=region_id]").val(ui.item.region_id);
+            $("input[name=city_id]").val(ui.item.city_id);
+
+        }
+    });
+//    .autocomplete("instance")._renderItem = function (ul, item) {
+//        var re = new RegExp("^" + this.term, "i");
+//        var t = item.label.replace(re, "<span style='font-weight:bold;color:Blue;'>" + this.term + "</span>");
+//        return $("<li></li>")
+//                .data("item.autocomplete", item)
+//                .append("<a>" + t + "</a>")
+//                .appendTo(ul);
+//    }
+
+
+    //Поднять объявление
+    $('#fads-up').on('click', function () {
+        $.ajax({
+            type: "POST",
+            url: smf_scripturl + "?action=fads;sa=fads_up_ajax",
+            data: {
+                fads_id: $('#fads-up').data('fads_id')
+            },
+            cache: false,
+            dataType: 'json', //html json
+            success: function (responce) {
+
+            },
+            error: function (responce) {
+            },
+            complete: function () {
+                location.reload(true);
+
+            }
+        });
+    });
+
+    //Добавить в закладки
+    $('#bookmark').on('click', function () {
+        $.ajax({
+            type: "POST",
+            url: smf_scripturl + "?action=fads;sa=bookmark_ajax",
+            data: {
+                fads_id: $('#bookmark').data('fads_id')
+            },
+            cache: false,
+            dataType: 'json', //html json
+            success: function (responce) {
+                if (responce['status'] === 'added') {
+                    $('#bookmark').text('В избранном');
+                } else {
+                    $('#bookmark').text('В избранноe');
+                }
+            },
+            error: function (responce) {
+            },
+            complete: function () {
+
+            }
+        });
+    });
+
+
+    //Очищаем инпут 
+    //+ сбрасываем региональные инпуты если надо..
+    $('.input_clear').on('click', function () {
+        $(this).parent().find('input').val('');
+
+        if ($(this).parent().find('input').attr('id') == 'location') {
+            console.log($(this).parent().find('input').attr('id') + ' clear');
+            $("input[name=country_id]").val('0');
+            $("input[name=region_id]").val('0');
+            $("input[name=city_id]").val('0');
+        }
+
+    });
+
+    //Перемещение в архив.. 
+    $('.to-archive').on('click', function () {
+        if (confirm('Переместить в архив?')) {
+            return true;
+
+        }
+        return false;
+    });
+
+
+    //Что то открываем.. не помню что..
+    $('.infobtn').on('click', function () {
+        $(this).hide();
+        $(this).parent().find('.infospoiler').show();
+    });
+
+
+    //Что то открываем.. не помню что..
+    $('.infospoiler').on('click', function () {
+        $(this).hide();
+        $(this).parent().find('.infobtn').show();
+    });
+
+
+    //Открыть телефон
+    $('.open_phone').on('click', function () {
+        $(this).replaceWith(base64.decode($(this).data('number')));
+
+    });
+
+    //Редирект куда то.. не помню где используется
+    $('#result_ads>div>.title>span').on('click', function () {
+        window.location.href = '' + $(this).parent().find('a').attr('href') + '';
+    });
+
+
+    //Перейти в свои сохранненные поиски
+    $('#saved_search').on('click', function () {
+        console.log('to savesearch');
+        window.location.href = smf_scripturl + "?action=fadscab;sa=savesearch";
+    });
+
+    //Сохранить условия поиска
+    $('#save_search').on('click', function () {
+
+
+
+        var data = {};
+        data['text_query'] = $('input[name=query]').val();
+        data['country_id'] = $('input[name=country_id]').val();
+        data['region_id'] = $('input[name=region_id]').val();
+        data['city_id'] = $('input[name=city_id]').val();
+        data['min_price'] = $('input[name=min_price]').val();
+        data['max_price'] = $('input[name=max_price]').val();
+        data['is_new'] = $('select[name=is_new] option:selected').val();
+        data['category_id'] = $('select[name=cat] option:selected').val();
+        data['sort_field'] = sort_field;
+        data['is_order_asc'] = is_order_asc;
+        data['user_id'] = user_id;
+
+
+
+        $.ajax({
+            type: "POST",
+            url: smf_scripturl + "?action=fadssearch;sa=save_search_ajax",
+            data: data,
+            cache: false,
+            dataType: 'json', //html json
+            success: function (responce) {
+                if (responce['progress'] === 'added') {
+                    $('#save_search').hide();
+                    $('#saved_search').show();
+                }
+                console.log(responce);
+            },
+            error: function (responce) {
+                console.log(responce);
+            },
+            complete: function (responce) {
+//                console.log(responce);
+            }
+        });
+
+
+    });
+
+
+    //Удалить преСохраненный поиск
+    $('.delete-save-search').on('click', function () {
+        if (confirm('Удалить?')) {
+
+            var saveId = $(this).data('id');
+
+            $(this).closest('ul').fadeOut("slow", function () {
+                $(this).hide();
+            });
+
+
+            $.ajax({
+                type: "POST",
+                url: smf_scripturl + "?action=fadscab;sa=savesearch_delete_ajax",
+                data: {
+                    save_search_id: saveId
+                },
+                cache: false,
+                dataType: 'json', //html json
+                success: function (responce) {
+                    console.log(responce);
+                },
+                error: function (responce) {
+                    console.log(responce);
+                },
+                complete: function (responce) {
+//                console.log(responce);
+                }
+            });
+
+            console.log('11');
+        }
+
+    });
+
+
+    //Прячем кнопки преСохраненных настроек при изменении условия поиска
+    $('input[name=query], #location, input[name=min_price], input[name=max_price]').on('textchange', function () {
+        $('#saved_search').hide();
+        $('#save_search').hide();
+    });
+    $('select[name=is_new], select[name=cat]').on('change', function () {
+        $('#saved_search').hide();
+        $('#save_search').hide();
+    });
+
+});
+
+
+
+//Показываем вверху справа сообщение
+function messageBox(msgs, color) {
+    var $div = $('<div/>').appendTo('#wrapper');
+    $div.css({
+        'position': 'fixed',
+        'top': '0px',
+        'right': '0px',
+        'border': '1px solid ' + color,
+        'padding': '15px',
+        'margin': '10px',
+        'border-radius': '5px',
+        'background': color,
+        'color': 'white',
+        'opacity': '0.9'
+    });
+
+    var string = '';
+    console.log(msgs);
+
+    for (var ArrVal in msgs) {
+        console.log(ArrVal);
+        string = string + msgs[ArrVal] + '<br />';
+    }
+
+    $div.html(string);
+    setTimeout(function () {
+        $.when($div.fadeOut(2000, 'swing', function () {
+            $div.remove()
+        }));
+    }, 3000);
+}
+
+
+//Типа count (php)
+Object.size = function (obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key))
+            size++;
+    }
+    return size;
+};
+
+
+
+ready(function () {
+
+});
+
+/*
+ * [hi-base64]{@link https://github.com/emn178/hi-base64}
+ *
+ * @version 0.2.1
+ * @author Chen, Yi-Cyuan [emn178@gmail.com]
+ * @copyright Chen, Yi-Cyuan 2014-2017
+ * @license MIT
+ */
+/*jslint bitwise: true */
+(function () {
+    'use strict';
+
+    var root = typeof window === 'object' ? window : {};
+    var NODE_JS = !root.HI_BASE64_NO_NODE_JS && typeof process === 'object' && process.versions && process.versions.node;
+    if (NODE_JS) {
+        root = global;
+    }
+    var COMMON_JS = !root.HI_BASE64_NO_COMMON_JS && typeof module === 'object' && module.exports;
+    var AMD = typeof define === 'function' && define.amd;
+    var BASE64_ENCODE_CHAR = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/'.split('');
+    var BASE64_DECODE_CHAR = {
+        'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4, 'F': 5, 'G': 6, 'H': 7, 'I': 8,
+        'J': 9, 'K': 10, 'L': 11, 'M': 12, 'N': 13, 'O': 14, 'P': 15, 'Q': 16,
+        'R': 17, 'S': 18, 'T': 19, 'U': 20, 'V': 21, 'W': 22, 'X': 23, 'Y': 24,
+        'Z': 25, 'a': 26, 'b': 27, 'c': 28, 'd': 29, 'e': 30, 'f': 31, 'g': 32,
+        'h': 33, 'i': 34, 'j': 35, 'k': 36, 'l': 37, 'm': 38, 'n': 39, 'o': 40,
+        'p': 41, 'q': 42, 'r': 43, 's': 44, 't': 45, 'u': 46, 'v': 47, 'w': 48,
+        'x': 49, 'y': 50, 'z': 51, '0': 52, '1': 53, '2': 54, '3': 55, '4': 56,
+        '5': 57, '6': 58, '7': 59, '8': 60, '9': 61, '+': 62, '/': 63, '-': 62,
+        '_': 63
+    };
+
+    var utf8ToBytes = function (str) {
+        var bytes = [];
+        for (var i = 0; i < str.length; i++) {
+            var c = str.charCodeAt(i);
+            if (c < 0x80) {
+                bytes[bytes.length] = c;
+            } else if (c < 0x800) {
+                bytes[bytes.length] = 0xc0 | (c >> 6);
+                bytes[bytes.length] = 0x80 | (c & 0x3f);
+            } else if (c < 0xd800 || c >= 0xe000) {
+                bytes[bytes.length] = 0xe0 | (c >> 12);
+                bytes[bytes.length] = 0x80 | ((c >> 6) & 0x3f);
+                bytes[bytes.length] = 0x80 | (c & 0x3f);
+            } else {
+                c = 0x10000 + (((c & 0x3ff) << 10) | (str.charCodeAt(++i) & 0x3ff));
+                bytes[bytes.length] = 0xf0 | (c >> 18);
+                bytes[bytes.length] = 0x80 | ((c >> 12) & 0x3f);
+                bytes[bytes.length] = 0x80 | ((c >> 6) & 0x3f);
+                bytes[bytes.length] = 0x80 | (c & 0x3f);
+            }
+        }
+        return bytes;
+    };
+
+    var decodeAsBytes = function (base64Str) {
+        var v1, v2, v3, v4, bytes = [], index = 0, length = base64Str.length;
+        if (base64Str.charAt(length - 2) === '=') {
+            length -= 2;
+        } else if (base64Str.charAt(length - 1) === '=') {
+            length -= 1;
+        }
+
+        // 4 char to 3 bytes
+        for (var i = 0, count = length >> 2 << 2; i < count; ) {
+            v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v3 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v4 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            bytes[index++] = (v1 << 2 | v2 >>> 4) & 255;
+            bytes[index++] = (v2 << 4 | v3 >>> 2) & 255;
+            bytes[index++] = (v3 << 6 | v4) & 255;
+        }
+
+        // remain bytes
+        var remain = length - count;
+        if (remain === 2) {
+            v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            bytes[index++] = (v1 << 2 | v2 >>> 4) & 255;
+        } else if (remain === 3) {
+            v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            v3 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+            bytes[index++] = (v1 << 2 | v2 >>> 4) & 255;
+            bytes[index++] = (v2 << 4 | v3 >>> 2) & 255;
+        }
+        return bytes;
+    };
+
+    var encodeFromBytes = function (bytes) {
+        var v1, v2, v3, base64Str = '', length = bytes.length;
+        for (var i = 0, count = parseInt(length / 3) * 3; i < count; ) {
+            v1 = bytes[i++];
+            v2 = bytes[i++];
+            v3 = bytes[i++];
+            base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                    BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                    BASE64_ENCODE_CHAR[(v2 << 2 | v3 >>> 6) & 63] +
+                    BASE64_ENCODE_CHAR[v3 & 63];
+        }
+
+        // remain char
+        var remain = length - count;
+        if (remain === 1) {
+            v1 = bytes[i];
+            base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                    BASE64_ENCODE_CHAR[(v1 << 4) & 63] +
+                    '==';
+        } else if (remain === 2) {
+            v1 = bytes[i++];
+            v2 = bytes[i];
+            base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                    BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                    BASE64_ENCODE_CHAR[(v2 << 2) & 63] +
+                    '=';
+        }
+        return base64Str;
+    };
+
+    var btoa = root.btoa, atob = root.atob, utf8Base64Encode, utf8Base64Decode;
+    if (NODE_JS) {
+        var Buffer = require('buffer').Buffer;
+        btoa = function (str) {
+            return new Buffer(str, 'ascii').toString('base64');
+        };
+
+        utf8Base64Encode = function (str) {
+            return new Buffer(str).toString('base64');
+        };
+
+        encodeFromBytes = utf8Base64Encode;
+
+        atob = function (base64Str) {
+            return new Buffer(base64Str, 'base64').toString('ascii');
+        };
+
+        utf8Base64Decode = function (base64Str) {
+            return new Buffer(base64Str, 'base64').toString();
+        };
+    } else if (!btoa) {
+        btoa = function (str) {
+            var v1, v2, v3, base64Str = '', length = str.length;
+            for (var i = 0, count = parseInt(length / 3) * 3; i < count; ) {
+                v1 = str.charCodeAt(i++);
+                v2 = str.charCodeAt(i++);
+                v3 = str.charCodeAt(i++);
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                        BASE64_ENCODE_CHAR[(v2 << 2 | v3 >>> 6) & 63] +
+                        BASE64_ENCODE_CHAR[v3 & 63];
+            }
+
+            // remain char
+            var remain = length - count;
+            if (remain === 1) {
+                v1 = str.charCodeAt(i);
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4) & 63] +
+                        '==';
+            } else if (remain === 2) {
+                v1 = str.charCodeAt(i++);
+                v2 = str.charCodeAt(i);
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                        BASE64_ENCODE_CHAR[(v2 << 2) & 63] +
+                        '=';
+            }
+            return base64Str;
+        };
+
+        utf8Base64Encode = function (str) {
+            var v1, v2, v3, base64Str = '', bytes = utf8ToBytes(str), length = bytes.length;
+            for (var i = 0, count = parseInt(length / 3) * 3; i < count; ) {
+                v1 = bytes[i++];
+                v2 = bytes[i++];
+                v3 = bytes[i++];
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                        BASE64_ENCODE_CHAR[(v2 << 2 | v3 >>> 6) & 63] +
+                        BASE64_ENCODE_CHAR[v3 & 63];
+            }
+
+            // remain char
+            var remain = length - count;
+            if (remain === 1) {
+                v1 = bytes[i];
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4) & 63] +
+                        '==';
+            } else if (remain === 2) {
+                v1 = bytes[i++];
+                v2 = bytes[i];
+                base64Str += BASE64_ENCODE_CHAR[v1 >>> 2] +
+                        BASE64_ENCODE_CHAR[(v1 << 4 | v2 >>> 4) & 63] +
+                        BASE64_ENCODE_CHAR[(v2 << 2) & 63] +
+                        '=';
+            }
+            return base64Str;
+        };
+
+        atob = function (base64Str) {
+            var v1, v2, v3, v4, str = '', length = base64Str.length;
+            if (base64Str.charAt(length - 2) === '=') {
+                length -= 2;
+            } else if (base64Str.charAt(length - 1) === '=') {
+                length -= 1;
+            }
+
+            // 4 char to 3 bytes
+            for (var i = 0, count = length >> 2 << 2; i < count; ) {
+                v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v3 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v4 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                str += String.fromCharCode((v1 << 2 | v2 >>> 4) & 255) +
+                        String.fromCharCode((v2 << 4 | v3 >>> 2) & 255) +
+                        String.fromCharCode((v3 << 6 | v4) & 255);
+            }
+
+            // remain bytes
+            var remain = length - count;
+            if (remain === 2) {
+                v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                str += String.fromCharCode((v1 << 2 | v2 >>> 4) & 255);
+            } else if (remain === 3) {
+                v1 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v2 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                v3 = BASE64_DECODE_CHAR[base64Str.charAt(i++)];
+                str += String.fromCharCode((v1 << 2 | v2 >>> 4) & 255) +
+                        String.fromCharCode((v2 << 4 | v3 >>> 2) & 255);
+            }
+            return str;
+        };
+
+        utf8Base64Decode = function (base64Str) {
+            var str = '', bytes = decodeAsBytes(base64Str), length = bytes.length;
+            var i = 0, followingChars = 0, b, c;
+            while (i < length) {
+                b = bytes[i++];
+                if (b <= 0x7F) {
+                    str += String.fromCharCode(b);
+                    continue;
+                } else if (b > 0xBF && b <= 0xDF) {
+                    c = b & 0x1F;
+                    followingChars = 1;
+                } else if (b <= 0xEF) {
+                    c = b & 0x0F;
+                    followingChars = 2;
+                } else if (b <= 0xF7) {
+                    c = b & 0x07;
+                    followingChars = 3;
+                } else {
+                    throw 'not a UTF-8 string';
+                }
+
+                for (var j = 0; j < followingChars; ++j) {
+                    b = bytes[i++];
+                    if (b < 0x80 || b > 0xBF) {
+                        throw 'not a UTF-8 string';
+                    }
+                    c <<= 6;
+                    c += b & 0x3F;
+                }
+                if (c >= 0xD800 && c <= 0xDFFF) {
+                    throw 'not a UTF-8 string';
+                }
+                if (c > 0x10FFFF) {
+                    throw 'not a UTF-8 string';
+                }
+
+                if (c <= 0xFFFF) {
+                    str += String.fromCharCode(c);
+                } else {
+                    c -= 0x10000;
+                    str += String.fromCharCode((c >> 10) + 0xD800);
+                    str += String.fromCharCode((c & 0x3FF) + 0xDC00);
+                }
+            }
+            return str;
+        };
+    } else {
+        utf8Base64Encode = function (str) {
+            var result = '';
+            for (var i = 0; i < str.length; i++) {
+                var charcode = str.charCodeAt(i);
+                if (charcode < 0x80) {
+                    result += String.fromCharCode(charcode);
+                } else if (charcode < 0x800) {
+                    result += String.fromCharCode(0xc0 | (charcode >> 6)) +
+                            String.fromCharCode(0x80 | (charcode & 0x3f));
+                } else if (charcode < 0xd800 || charcode >= 0xe000) {
+                    result += String.fromCharCode(0xe0 | (charcode >> 12)) +
+                            String.fromCharCode(0x80 | ((charcode >> 6) & 0x3f)) +
+                            String.fromCharCode(0x80 | (charcode & 0x3f));
+                } else {
+                    charcode = 0x10000 + (((charcode & 0x3ff) << 10) | (str.charCodeAt(++i) & 0x3ff));
+                    result += String.fromCharCode(0xf0 | (charcode >> 18)) +
+                            String.fromCharCode(0x80 | ((charcode >> 12) & 0x3f)) +
+                            String.fromCharCode(0x80 | ((charcode >> 6) & 0x3f)) +
+                            String.fromCharCode(0x80 | (charcode & 0x3f));
+                }
+            }
+            return btoa(result);
+        };
+
+        utf8Base64Decode = function (base64Str) {
+            var tmpStr = atob(base64Str.trim('=').replace(/-/g, '+').replace(/_/g, '/'));
+            if (!/[^\x00-\x7F]/.test(tmpStr)) {
+                return tmpStr;
+            }
+            var str = '', i = 0, length = tmpStr.length, followingChars = 0, b, c;
+            while (i < length) {
+                b = tmpStr.charCodeAt(i++);
+                if (b <= 0x7F) {
+                    str += String.fromCharCode(b);
+                    continue;
+                } else if (b > 0xBF && b <= 0xDF) {
+                    c = b & 0x1F;
+                    followingChars = 1;
+                } else if (b <= 0xEF) {
+                    c = b & 0x0F;
+                    followingChars = 2;
+                } else if (b <= 0xF7) {
+                    c = b & 0x07;
+                    followingChars = 3;
+                } else {
+                    throw 'not a UTF-8 string';
+                }
+
+                for (var j = 0; j < followingChars; ++j) {
+                    b = tmpStr.charCodeAt(i++);
+                    if (b < 0x80 || b > 0xBF) {
+                        throw 'not a UTF-8 string';
+                    }
+                    c <<= 6;
+                    c += b & 0x3F;
+                }
+                if (c >= 0xD800 && c <= 0xDFFF) {
+                    throw 'not a UTF-8 string';
+                }
+                if (c > 0x10FFFF) {
+                    throw 'not a UTF-8 string';
+                }
+
+                if (c <= 0xFFFF) {
+                    str += String.fromCharCode(c);
+                } else {
+                    c -= 0x10000;
+                    str += String.fromCharCode((c >> 10) + 0xD800);
+                    str += String.fromCharCode((c & 0x3FF) + 0xDC00);
+                }
+            }
+            return str;
+        };
+    }
+
+    var encode = function (str, asciiOnly) {
+        var notString = typeof (str) != 'string';
+        if (notString && str.constructor === root.ArrayBuffer) {
+            str = new Uint8Array(str);
+        }
+        if (notString) {
+            return encodeFromBytes(str);
+        } else {
+            if (!asciiOnly && /[^\x00-\x7F]/.test(str)) {
+                return utf8Base64Encode(str);
+            } else {
+                return btoa(str);
+            }
+        }
+    };
+
+    var decode = function (base64Str, asciiOnly) {
+        return asciiOnly ? atob(base64Str) : utf8Base64Decode(base64Str);
+    };
+
+    var exports = {
+        encode: encode,
+        decode: decode,
+        atob: atob,
+        btoa: btoa
+    };
+    decode.bytes = decodeAsBytes;
+    decode.string = decode;
+
+    if (COMMON_JS) {
+        module.exports = exports;
+    } else {
+        root.base64 = exports;
+        if (AMD) {
+            define(function () {
+                return exports;
+            });
+        }
+    }
+})();
+
