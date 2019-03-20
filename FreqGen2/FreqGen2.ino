@@ -6,14 +6,14 @@
 uint32_t i = 0;
 
 void setup() {
-  pinMode(13, OUTPUT);//step  
+  pinMode(10, OUTPUT);//step  
 }
 
 void loop() {  
-    PORTB |= _BV(PB5); // HIGH
-    delayMicroseconds(3);
+    PORTB |= _BV(PB2); // HIGH
+    delayMicroseconds(10);
     //delay(30);
-    PORTB &= ~ _BV(PB5); // LOW
-    delayMicroseconds(3);
+    PORTB &= ~ _BV(PB2); // LOW
+    delayMicroseconds(10);
     //delay(30);
 }
