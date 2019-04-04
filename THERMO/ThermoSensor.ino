@@ -1,3 +1,3 @@
 void ThermoSensor_read() {
-  ThermoSensor_temperature = ThermoSensor.readObjectTempC();
+  ThermoSensor_temperature = round(10.0 * ThermoSensor.readObjectTempC()) / 10.0;
 }

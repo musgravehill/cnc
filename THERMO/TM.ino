@@ -16,10 +16,10 @@ void TM_loop() {
 }
 
 void TM_911ms() {
+  ThermoSensor_read();
 }
 
-void TM_301ms() {
-  ThermoSensor_read();
+void TM_301ms() {  
   OLED_render();
 }
 

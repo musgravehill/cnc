@@ -52,7 +52,7 @@ void OLED_mainScreen() {
   u8g.firstPage();
   do {
 
-    //u8g.setFont(u8g_font_unifont_86); //u8g_font_9x15r 
+    //u8g.setFont(u8g_font_unifont_86); //u8g_font_9x15r
     u8g.setFont(u8g_font_9x15Br);  //check min size of font
     u8g.setFontPosTop();
 
@@ -61,14 +61,13 @@ void OLED_mainScreen() {
     u8g.drawBox(0, 0, BATT_logo_energy_w, 12);
     u8g.drawStr(80, 0, F("V"));
     u8g.setPrintPos(40, 0);
-    u8g.print(BATT_voltage_points / 233.5714, 2);  
+    u8g.print(BATT_voltage_points / 230.7908, 2);
 
-    u8g.drawStr(118, 20, F("O"));
-    u8g.setFont(u8g_font_fub35n); //u8g_font_9x15r u8g_font_helvB24
+    u8g.setFont(u8g_font_fur30n); //u8g_font_9x15r u8g_font_helvB24
     u8g.setFontPosTop();
     //u8g.drawStr(100, 32, F("C"));
-    u8g.setPrintPos(0, 20);
-    u8g.print(round(ThermoSensor_temperature));
+    u8g.setPrintPos(0, 28);
+    u8g.print(ThermoSensor_temperature, 1);
 
 
   } while ( u8g.nextPage() );
