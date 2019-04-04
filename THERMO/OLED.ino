@@ -65,10 +65,10 @@ void OLED_mainScreen() {
     u8g.setPrintPos(40, 0);
     u8g.print(BATT_voltage_points/244.0, 2);
 
-    u8g.setFont(u8g_font_helvB24); //u8g_font_9x15r
+    u8g.setFont(u8g_font_fub35n); //u8g_font_9x15r u8g_font_helvB24
     u8g.setFontPosTop();
-    u8g.drawStr(100, 32, F("C"));
-    u8g.setPrintPos(0, 32);
+    //u8g.drawStr(100, 32, F("C"));
+    u8g.setPrintPos(0, 24);
     u8g.print(round(ThermoSensor_temperature));
 
 
