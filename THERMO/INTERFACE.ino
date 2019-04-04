@@ -12,7 +12,7 @@ void BATT_check() {
   // 4.02v = 981 points =>  244.02985074626865671641791044776 points on 1 v
   //1023 = 1.1 v
   // 3.3v  = 805
-  // 4.20 = 1024
+  // 4.20 = 1024               
 
   BATT_voltage_points =  analogRead(BATT_analog_pin); //0.5 * BATT_voltage_points + 0.5 *
 

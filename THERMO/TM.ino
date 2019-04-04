@@ -16,8 +16,7 @@ void TM_loop() {
 }
 
 void TM_911ms() {
-  Serial.print("Ambient = "); Serial.print(ThermoSensor.readAmbientTempC());
-  Serial.print("*C\tObject = "); Serial.print(ThermoSensor.readObjectTempC()); Serial.println("*C");
+  ThermoSensor_read();
 }
 
 void TM_301ms() {
