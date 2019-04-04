@@ -1,6 +1,4 @@
 void OLED_init() {
-  //u8g.setFont(u8g_font_unifont_0_8); //u8g_font_9x15r
-  //u8g.setFontPosTop();
 }
 
 void OLED_render() {
@@ -8,7 +6,7 @@ void OLED_render() {
 }
 
 
-void OLED_setOn() {  
+void OLED_setOn() {
   u8g.sleepOff();
 }
 /*
@@ -54,17 +52,18 @@ void OLED_mainScreen() {
   u8g.firstPage();
   do {
 
-    //u8g.setFont(u8g_font_unifont_86); //u8g_font_9x15r
-    u8g.setFont(u8g_font_unifont_0_8); //u8g_font_9x15r
+    //u8g.setFont(u8g_font_unifont_86); //u8g_font_9x15r 
+    u8g.setFont(u8g_font_9x15Br);  //check min size of font
     u8g.setFontPosTop();
 
     //base battery
     u8g.drawFrame(0, 0, BATT_logo_box_w, 12);
     u8g.drawBox(0, 0, BATT_logo_energy_w, 12);
-    u8g.drawStr(80, 0, F("V"));    
+    u8g.drawStr(80, 0, F("V"));
     u8g.setPrintPos(40, 0);
-    u8g.print(BATT_voltage_points/244.0, 2);
+    u8g.print(BATT_voltage_points / 233.5714, 2);  
 
+    u8g.drawStr(118, 20, F("O"));
     u8g.setFont(u8g_font_fub35n); //u8g_font_9x15r u8g_font_helvB24
     u8g.setFontPosTop();
     //u8g.drawStr(100, 32, F("C"));

@@ -9,14 +9,14 @@ void BATT_check() {
   delay(50);
   analogRead(BATT_analog_pin);
 
-  // 4.02v = 981 points =>  244.02985074626865671641791044776 points on 1 v
-  //1023 = 1.1 v
-  // 3.3v  = 805
-  // 4.20 = 1024               
+  // 4.02v = 981 points =>  233.5714 points on 1 v    
+ 
+  // 3.3v  = 
+  // 4.20 = 981              
 
   BATT_voltage_points =  analogRead(BATT_analog_pin); //0.5 * BATT_voltage_points + 0.5 *
 
-  BATT_logo_energy_w = map(constrain(BATT_voltage_points, 805, 1023), 805, 1023, 0, BATT_logo_box_w);
+  BATT_logo_energy_w = map(constrain(BATT_voltage_points, 805, 981), 805, 1023, 0, BATT_logo_box_w);
 
   analogReference(DEFAULT); // VCC 
    
