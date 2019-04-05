@@ -1,5 +1,6 @@
 // 0. upload OPTIBOOT for normal watchdog
 // Narrow beam  MLX90614ESF-DCI
+//filter 1011010001110100  46196 B474
 
 #define DBG 1
 
