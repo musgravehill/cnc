@@ -4,6 +4,9 @@
    Кнопка "режим" A2 (in)
     Выход генератора 0..7 + 9 (out)
     A4 A5 i2c monitor
+
+    up_down(boolean x) { // управление регулировками
+  static boolean n=0;  if (n=!n){return;} //фикс  двойного щелчка энкодера 
 */
 
 #include <Wire.h>
@@ -173,6 +176,7 @@ void setup() {
 
 
 void up_down(boolean x) { // управление регулировками
+  static boolean n=0;  if (n=!n){return;} //фикс  двойного щелчка энкодера
 
   if (TCCR1B == 17 && ICR1 < 2800 && regim == 5) {
     if (x) {
@@ -334,7 +338,7 @@ void monitor_out() {
   lcd.setCursor(0, 1);
   switch (regim) {
     case 0: lcd.print("SINE"); break;
-    case 1: lcd.print("TRIANGLE"); break;
+    case 1: lcd.print("TRI"); break;
     case 2: lcd.print("SQUARE"); break;
     case 3: lcd.print("SAW R"); break;
     case 4: lcd.print("SAW L"); break;
@@ -345,12 +349,14 @@ void monitor_out() {
   if (regim == 6) {
     lcd.setCursor(12, 1);
     lcd.print(duty);
+    lcd.setCursor(15, 1);
     lcd.print("%");
   }
   else {
-    lcd.setCursor(8, 1);
-    lcd.print("step");
-    lcd.print(shag);
+    lcd.setCursor(10, 1);
+    lcd.print("<");
+    lcd.print(shag);    
+    lcd.print(">");
   }
 
 
@@ -406,7 +412,7 @@ void set_duty() {
 }
 
 void check_regim() { // проверка и установка режимов генератора
-  if (regim < 5) { 
+  if (regim < 5) {
     if (freq > 100000) freq = 100000;
     TCCR1B = 0;
     TCCR1A = 0;  DDRB &= ~(1 << DDB1); // 9 pin arduino set Z-mode
