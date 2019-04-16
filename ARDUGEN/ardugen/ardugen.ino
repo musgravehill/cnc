@@ -316,25 +316,43 @@ void loop() {
 
 
 void monitor_out() {
-  delay(1000);
   String dutystr, stepstr;
-  dutystr = String("Duty=" + String(duty) + "%");
+  dutystr = String(String(duty) + "%");
   stepstr = String("Step= " + String(shag));
-  
+
   lcd.clear();
   lcd.setCursor(0, 0);
-  
- 
- 
+
   if (freq < 10000) {
     lcd.print(freq);
+    lcd.print(" Hz");
+  } else {
+    lcd.print( ((float)freq / 1000), 3);
+    lcd.print(" kHz");
   }
-  if (freq >= 10000u && freq < 1000000ul ) {
-    lcd.print( ((float)freq / 1000));
+
+  lcd.setCursor(0, 1);
+  switch (regim) {
+    case 0: lcd.print("SINE"); break;
+    case 1: lcd.print("TRIANGLE"); break;
+    case 2: lcd.print("SQUARE"); break;
+    case 3: lcd.print("SAW R"); break;
+    case 4: lcd.print("SAW L"); break;
+    case 5: lcd.print("PRECISE"); break;
+    case 6: lcd.print("DUTY "); break;
   }
-  if (freq >= 1000000ul ) {
-    lcd.print( ((float)freq / 1000));
+
+  if (regim == 6) {
+    lcd.setCursor(12, 1);
+    lcd.print(duty);
+    lcd.print("%");
   }
+  else {
+    lcd.setCursor(8, 1);
+    lcd.print("step");
+    lcd.print(shag);
+  }
+
 
   /*
     lcd.clrScr();
@@ -388,7 +406,7 @@ void set_duty() {
 }
 
 void check_regim() { // проверка и установка режимов генератора
-  if (regim < 5) {
+  if (regim < 5) { 
     if (freq > 100000) freq = 100000;
     TCCR1B = 0;
     TCCR1A = 0;  DDRB &= ~(1 << DDB1); // 9 pin arduino set Z-mode
