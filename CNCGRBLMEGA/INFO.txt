@@ -1,3 +1,11 @@
+==============VERSION 2========================
+#1  50kHz MAX
+#2-9 380kHz MAX, 200kHz normal, R 60C, opto 50C
+
+
+
+
+
 DM542 driver
 12.8mA 5V  STEP 
 12.8mA 5V  DIR
