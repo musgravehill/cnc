@@ -5,8 +5,8 @@ END_OF_LINE = "[13][10]"
 LINE_NUM_START     = 0
 LINE_NUM_INCREMENT = 1      
 LINE_NUM_MAXIMUM   = 9999999   
-;
-FORMAT = [N|@|N|1.0] ;commands format 1.3 -->  88.123 precision
+FORMAT = [N|@|N|1.0] 
+;  commands format 1.3 -->  88.123 precision
 FORMAT = [S|@|S|1.0]
 FORMAT = [F|#|F|1.3]
 FORMAT = [X|#|X|1.3]
@@ -14,36 +14,52 @@ FORMAT = [Y|#|Y|1.3]
 FORMAT = [Z|#|Z|1.3]
 FORMAT = [XH|@|X|1.3]
 FORMAT = [YH|@|Y|1.3]
-FORMAT = [ZH|@|Z|1.3] ;H=home
-FORMAT = [I|@|I|1.3] ;команда дуги или круга
-FORMAT = [J|@|J|1.3]  ;команда дуги или круга    
-;     
+FORMAT = [ZH|@|Z|1.3] 
+;  H=home
+FORMAT = [I|@|I|1.3] 
+;  команда дуги или круга
+FORMAT = [J|@|J|1.3]  
+;  команда дуги или круга    
 START = "%"
-START = "(------------------------------)"
-START = "([TOOLDESC])" ;описание фрезы
-START = "(X MIN:[XMIN]  Y MIN:[YMIN]   Z MIN:[ZMIN])" ;MIN позиции
-START = "(X MAX:[XMAX]  Y MAX:[YMAX]   Z MAX:[ZMAX])" ;MAX позиции
-START = "(FEED RATES IN MM/MINUTE:)" ;
-START = "(CUTTING FEED RATE:[FC])" ;
-START = "(PLUNGE FEED RATE :[FP])" ;
-START = "(RAPID FEED RATE  :[FR])" ;
-START = "(------------------------------)"
-START = "[N]G40" 			;G40 отменяет коррекцию на режущий инструмент
-START = "[N]G17"			;G17 Выбор в качестве рабочей плоскости обработки плоскости X-Y
-START = "[N]G80"			;G80 Отмена циклов сверления, растачивания, нарезания резьбы метчиком и т. д.
-START = "[N]G49"			;G49 Отмена компенсации длины инструмента, назначенной командами G43 или G44
-START = "[N]G90" 			;G90 Задание абсолютных координат опорных точек траектории
-START = "[N]G54" 			;G54 Для установки относительной системы координат (работа в приращения от точки обнуления???)
-START = "[N]G0[ZH]" 		;Z в home позицию    "[N]G0[ZH]H1" в home-точку из Арткама?
-START = "[N]G0[XH][YH]" 	;XY в home позицию
-START = "[N][S]M3" 			;шпиндель включаем start the spindle clockwise at the S speed 
+START = "(------------------------------)" 
+START = "(freza [TOOLDESC])" 
+;  описание фрезы
+START = "(X MIN:[XMIN]  Y MIN:[YMIN]   Z MIN:[ZMIN])" 
+;  MIN позиции
+START = "(X MAX:[XMAX]  Y MAX:[YMAX]   Z MAX:[ZMAX])" 
+;  MAX позиции
+START = "(FEED RATES IN MM/MINUTE:)" 
+START = "(CUTTING FEED RATE:[FC])" 
+START = "(PLUNGE FEED RATE :[FP])" 
+START = "(RAPID FEED RATE  :[FR])" 
+START = "(------------------------------)" 
+START = "[N]G40" 			
+;  G40 отменяет коррекцию на режущий инструмент
+START = "[N]G17"			
+;  G17 Выбор в качестве рабочей плоскости обработки плоскости X-Y
+START = "[N]G80"			
+;  G80 Отмена циклов сверления, растачивания, нарезания резьбы метчиком и т. д.
+START = "[N]G49"			
+;  G49 Отмена компенсации длины инструмента, назначенной командами G43 или G44
+START = "[N]G90" 			
+;  G90 Задание абсолютных координат опорных точек траектории
+START = "[N]G54" 			
+;  G54 Для установки относительной системы координат (работа в приращения от точки обнуления???)
+START = "[N]G0[ZH]" 		
+;  Z в home позицию    "[N]G0[ZH]H1" в home-точку из Арткама?
+START = "[N]G0[XH][YH]" 	
+;  XY в home позицию
+START = "[N][S]M3" 			
+;  шпиндель включаем start the spindle clockwise at the S speed 
 RAPID_RATE_MOVE        = "[N]G0[X][Y][Z]"
 FIRST_FEED_RATE_MOVE   = "[N]G1[X][Y][Z][F]"
 FEED_RATE_MOVE         = "[N][X][Y][Z]"
-FIRST_CW_ARC_MOVE      = "[N]G2[X][Y][i][J][F]"
-CW_ARC_MOVE            = "[N]G2[X][Y][i][J]"
-FIRST_CCW_ARC_MOVE     = "[N]G3[X][Y][i][J][F]"
-CCW_ARC_MOVE           = "[N]G3[X][Y][i][J]"
+FIRST_CW_ARC_MOVE      = "[N]G2[X][Y][I][J][F]"
+CW_ARC_MOVE            = "[N]G2[X][Y][I][J]"
+FIRST_CCW_ARC_MOVE     = "[N]G3[X][Y][I][J][F]"
+CCW_ARC_MOVE           = "[N]G3[X][Y][I][J]"
 END = "G0[ZH]"
-END = "G0X[XH][YH]M5"      ;возврат не в X0Y0, а в точку Home заданную в ArtCAM и стоп шпиндель
+END = "G0X[XH][YH]M5"      
+
+;  возврат не в X0Y0, а в точку Home заданную в ArtCAM и стоп шпиндель
 END = "M30"
