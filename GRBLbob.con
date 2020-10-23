@@ -21,45 +21,44 @@ FORMAT = [I|@|I|1.3]
 FORMAT = [J|@|J|1.3]  
 ;  команда дуги или круга    
 START = "%"
-START = "(------------------------------)" 
-START = "(freza [TOOLDESC])" 
+START = "(------------------------------)"
+START = "(freza diametr, not radius [TOOLDESCU|@])"
 ;  описание фрезы
-START = "(X MIN:[XMIN]  Y MIN:[YMIN]   Z MIN:[ZMIN])" 
+START = "(X MIN:[XMIN]  Y MIN:[YMIN]   Z MIN:[ZMIN])"
 ;  MIN позиции
-START = "(X MAX:[XMAX]  Y MAX:[YMAX]   Z MAX:[ZMAX])" 
+START = "(X MAX:[XMAX]  Y MAX:[YMAX]   Z MAX:[ZMAX])"
 ;  MAX позиции
-START = "(FEED RATES IN MM/MINUTE:)" 
-START = "(CUTTING FEED RATE:[FC])" 
-START = "(PLUNGE FEED RATE :[FP])" 
-START = "(RAPID FEED RATE  :[FR])" 
-START = "(------------------------------)" 
-START = "[N]G40" 			
+START = "(FEED RATES IN MM/MINUTE:)"
+START = "(CUTTING FEED RATE:[FC])"
+START = "(PLUNGE FEED RATE :[FP])"
+START = "(RAPID FEED RATE  :[FR])"
+START = "(------------------------------)"
+START = "G40"			
 ;  G40 отменяет коррекцию на режущий инструмент
-START = "[N]G17"			
+START = "G17"			
 ;  G17 Выбор в качестве рабочей плоскости обработки плоскости X-Y
-START = "[N]G80"			
+START = "G80"			
 ;  G80 Отмена циклов сверления, растачивания, нарезания резьбы метчиком и т. д.
-START = "[N]G49"			
+START = "G49"			
 ;  G49 Отмена компенсации длины инструмента, назначенной командами G43 или G44
-START = "[N]G90" 			
+START = "G90"			
 ;  G90 Задание абсолютных координат опорных точек траектории
-START = "[N]G54" 			
+START = "G54"			
 ;  G54 Для установки относительной системы координат (работа в приращения от точки обнуления???)
-START = "[N]G0[ZH]" 		
-;  Z в home позицию    "[N]G0[ZH]H1" в home-точку из Арткама?
-START = "[N]G0[XH][YH]" 	
+START = "G0[ZH]"		
+;  Z в home позицию    "G0[ZH]H1"в home-точку из Арткама?
+START = "G0[XH][YH]"	
 ;  XY в home позицию
-START = "[N][S]M3" 			
+START = "[S]M3"			
 ;  шпиндель включаем start the spindle clockwise at the S speed 
-RAPID_RATE_MOVE        = "[N]G0[X][Y][Z]"
-FIRST_FEED_RATE_MOVE   = "[N]G1[X][Y][Z][F]"
-FEED_RATE_MOVE         = "[N][X][Y][Z]"
-FIRST_CW_ARC_MOVE      = "[N]G2[X][Y][I][J][F]"
-CW_ARC_MOVE            = "[N]G2[X][Y][I][J]"
-FIRST_CCW_ARC_MOVE     = "[N]G3[X][Y][I][J][F]"
-CCW_ARC_MOVE           = "[N]G3[X][Y][I][J]"
+RAPID_RATE_MOVE        = "G0[X][Y][Z]"
+FIRST_FEED_RATE_MOVE   = "G1[X][Y][Z][F]"
+FEED_RATE_MOVE         = "[X][Y][Z]"
+FIRST_CW_ARC_MOVE      = "G2[X][Y][I][J][F]"
+CW_ARC_MOVE            = "G2[X][Y][I][J]"
+FIRST_CCW_ARC_MOVE     = "G3[X][Y][I][J][F]"
+CCW_ARC_MOVE           = "G3[X][Y][I][J]"
 END = "G0[ZH]"
-END = "G0X[XH][YH]M5"      
-
+END = "G0X[XH][YH]M5"    
 ;  возврат не в X0Y0, а в точку Home заданную в ArtCAM и стоп шпиндель
 END = "M30"
