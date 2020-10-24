@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://segakhv.com/ssserg/calc2.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="description" content="Калькулятор поиска центра прямоугольника">
+		<meta name="keywords" content="Калькулятор поиска центра прямоугольника">
+		<meta name="author" content="Sega V Klimoff">
+		<link rel="shortcut icon" type="image/png" href="http://segakhv.com/ssserg/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="./центра прямоугольника_files/style.css">
+		<title>Calc2</title>
+		<style>
+			#left {
+			float: left; /* Обтекание по правому  краю */
+			padding-left: 10px;
+			padding-top: 50px;
+			width: 500px; /* Ширина слоя */
+			text-align: center;
+			}
+			#content_mobile {
+			float: right; /* Обтекание по левому краю */
+			padding-left: 40px;
+			width: 270px; /* Ширина слоя */
+			}
+		</style>
+		<script>
+			function calc_8(form)
+			{
+			//	var re = /[\D]/;
+				var x1 = parseFloat(form.x1.value.replace(',', '.'));
+				var y1 = parseFloat(form.y1.value.replace(',', '.'));
+				var x2 = parseFloat(form.x2.value.replace(',', '.'));
+				var y2 = parseFloat(form.y2.value.replace(',', '.'));
+				var x3 = parseFloat(form.x3.value.replace(',', '.'));
+				var y3 = parseFloat(form.y3.value.replace(',', '.'));
+				var x4 = parseFloat(form.x4.value.replace(',', '.'));
+				var y4 = parseFloat(form.y4.value.replace(',', '.'));
+				var x5 = parseFloat(form.x5.value.replace(',', '.'));
+				var y5 = parseFloat(form.y5.value.replace(',', '.'));
+				var x6 = parseFloat(form.x6.value.replace(',', '.'));
+				var y6 = parseFloat(form.y6.value.replace(',', '.'));
+				var x7 = parseFloat(form.x7.value.replace(',', '.'));
+				var y7 = parseFloat(form.y7.value.replace(',', '.'));
+				var x8 = parseFloat(form.x8.value.replace(',', '.'));
+				var y8 = parseFloat(form.y8.value.replace(',', '.'));
+				
+				var k1 = (y1-y2)/(x1-x2);
+				var k2 = (y3-y4)/(x3-x4);
+				var k3 = (y5-y6)/(x5-x6);
+				var k4 = (y7-y8)/(x7-x8);
+				
+				var b1 = y1-x1*k1;
+				var b2 = y3-x3*k2;
+				var b3 = y5-x5*k3;
+				var b4 = y7-x7*k4;
+				
+				var xx1 = (b2-b1)/(k1-k2);
+				var xx2 = (b3-b2)/(k2-k3);
+				var xx3 = (b4-b3)/(k3-k4);
+				var xx4 = (b1-b4)/(k4-k1);
+				
+				var yy1 = k1*xx1+b1;
+				var yy2 = k2*xx2+b2;
+				var yy3 = k3*xx3+b3;
+				var yy4 = k4*xx4+b4;
+				
+				var kk1 = (yy1-yy3)/(xx1-xx3);
+				var kk2 = (yy2-yy4)/(xx2-xx4);
+				
+				var bb1 = yy1-xx1*kk1;
+				var bb2 = yy2-xx2*kk2;
+				
+				var x0 = (bb2-bb1)/(kk1-kk2);
+				var y0 = kk1*x0+bb1;
+				
+				form.Resultxx1.value=Math.round(xx1*1000)/1000;
+				form.Resultyy1.value=Math.round(yy1*1000)/1000;
+				form.Resultxx2.value=Math.round(xx2*1000)/1000;
+				form.Resultyy2.value=Math.round(yy2*1000)/1000;
+				form.Resultxx3.value=Math.round(xx3*1000)/1000;
+				form.Resultyy3.value=Math.round(yy3*1000)/1000;
+				form.Resultxx4.value=Math.round(xx4*1000)/1000;
+				form.Resultyy4.value=Math.round(yy4*1000)/1000;
+				
+				form.Resultx0.value=Math.round(x0*1000)/1000;
+				form.Resulty0.value=Math.round(y0*1000)/1000;
+			}
+			
+			function calc_v(form)
+			{
+			//	var re = /[\D]/;
+				var xx1 = parseFloat(form.xx1.value.replace(',', '.'));
+				var yy1 = parseFloat(form.yy1.value.replace(',', '.'));
+				var xx2 = parseFloat(form.xx2.value.replace(',', '.'));
+				var yy2 = parseFloat(form.yy2.value.replace(',', '.'));
+				var xx3 = parseFloat(form.xx3.value.replace(',', '.'));
+				var yy3 = parseFloat(form.yy3.value.replace(',', '.'));
+				var xx4 = parseFloat(form.xx4.value.replace(',', '.'));
+				var yy4 = parseFloat(form.yy4.value.replace(',', '.'));
+				
+				var kk1 = (yy1-yy3)/(xx1-xx3);
+				var kk2 = (yy2-yy4)/(xx2-xx4);
+				
+				var bb1 = yy1-xx1*kk1;
+				var bb2 = yy2-xx2*kk2;
+				
+				var x0 = (bb2-bb1)/(kk1-kk2);
+				var y0 = kk1*x0+bb1;
+				
+				form.Resultx0.value=Math.round(x0*1000)/1000;
+				form.Resulty0.value=Math.round(y0*1000)/1000;
+			}
+		</script>
+		
+	</head>
+	<body>
+		<div id="body_mobile">
+			<h1>Калькулятор поиска центра произвольно размещенного на плоскости прямоугольника</h1>	
+			
+			<br>
+			<div id="left">
+				<img src="./центра прямоугольника_files/calc2.png">
+			</div>
+			
+			<div id="content_mobile">
+				<center>
+					<h3>по 8 точкам</h3><br>
+					<form>
+						<table border="0">
+							<tbody><tr>
+								<td>x1: <input name="x1" size="6" value=""></td>
+								<td>y1: <input name="y1" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x2: <input name="x2" size="6" value=""></td>
+								<td>y2: <input name="y2" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x3: <input name="x3" size="6" value=""></td>
+								<td>y3: <input name="y3" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x4: <input name="x4" size="6" value=""></td>
+								<td>y4: <input name="y4" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x5: <input name="x5" size="6" value=""></td>
+								<td>y5: <input name="y5" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x6: <input name="x6" size="6" value=""></td>
+								<td>y6: <input name="y6" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x7: <input name="x7" size="6" value=""></td>
+								<td>y7: <input name="y7" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td>x8: <input name="x8" size="6" value=""></td>
+								<td>y8: <input name="y8" size="6" value=""></td>
+							</tr>
+							<tr>
+								<td colspan="2">
+									<br>
+									<input name="Button" onclick="calc_8(this.form)" value="Считать " type="button"><br><br>
+									
+									<b>Вершины:</b><br>
+									xx1=<input style="border:none" size="6" value="   " name="Resultxx1">&nbsp;
+									yy1=<input style="border:none" size="6" value="   " name="Resultyy1"><br>
+									xx2=<input style="border:none" size="6" value="   " name="Resultxx2">&nbsp;
+									yy2=<input style="border:none" size="6" value="   " name="Resultyy2"><br>
+									xx3=<input style="border:none" size="6" value="   " name="Resultxx3">&nbsp;
+									yy3=<input style="border:none" size="6" value="   " name="Resultyy3"><br>
+									xx4=<input style="border:none" size="6" value="   " name="Resultxx4">&nbsp;
+								yy4=<input style="border:none" size="6" value="   " name="Resultyy4"><br>
+								<b>Центр:</b><br>
+								x0=<input style="border:none" size="6" value="   " name="Resultx0">&nbsp;
+								y0=<input style="border:none" size="6" value="   " name="Resulty0"><br>
+							</td>
+						</tr>
+					</tbody></table>
+				</form>
+			</center>
+			
+			<hr>
+			<center>
+				<h3>по вершинам</h3><br>
+				<form>
+					<table border="0">
+						<tbody><tr>
+							<td>xx1: <input name="xx1" size="6" value=""></td>
+							<td>yy1: <input name="yy1" size="6" value=""></td>
+						</tr>
+						<tr>
+							<td>xx2: <input name="xx2" size="6" value=""></td>
+							<td>yy2: <input name="yy2" size="6" value=""></td>
+						</tr>
+						<tr>
+							<td>xx3: <input name="xx3" size="6" value=""></td>
+							<td>yy3: <input name="yy3" size="6" value=""></td>
+						</tr>
+						<tr>
+							<td>xx4: <input name="xx4" size="6" value=""></td>
+							<td>yy4: <input name="yy4" size="6" value=""></td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								<br>
+								<input name="Button" onclick="calc_v(this.form)" value="Считать " type="button"><br><br>
+								<b>Центр:</b><br>
+								x0=<input style="border:none" size="6" value="   " name="Resultx0">&nbsp;
+								y0=<input style="border:none" size="6" value="   " name="Resulty0"><br>
+							</td>
+						</tr>
+					</tbody></table>
+				</form>
+			</center>
+		</div>
+	</div>
+																					<app-content ng-version="10.1.5"></app-content></body><div></div></html>

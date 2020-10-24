@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://segakhv.com/ssserg/calc1.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="description" content="Калькулятор поиска центра окружности по трем точкам">
+		<meta name="keywords" content="Калькулятор поиска центра окружности по трем точкам">
+		<meta name="author" content="Sega V Klimoff">
+		<link rel="shortcut icon" type="image/png" href="http://segakhv.com/ssserg/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="./центра окружности_files/style.css">
+		<title>Calc1</title>
+		<style>
+			#left {
+			float: left; /* Обтекание по правому  краю */
+			padding-left: 10px;
+			padding-top: 100px;
+			width: 500px; /* Ширина слоя */
+			text-align: center;
+			}
+			#content_mobile {
+			float: right; /* Обтекание по левому краю */
+			padding-left: 40px;
+			padding-top: 150px;
+			width: 270px; /* Ширина слоя */
+			}
+		</style>
+		<script>
+			
+			function calc_1(form)
+			{
+				var commenty = "";
+				var commentx = "";
+				var commentr = "";
+				var y;
+				var x;
+				var r;
+			//	var re = /[\D]/;
+				x1 = parseFloat(form.x1.value.replace(',', '.'));
+				y1 = parseFloat(form.y1.value.replace(',', '.'));
+				x2 = parseFloat(form.x2.value.replace(',', '.'));
+				y2 = parseFloat(form.y2.value.replace(',', '.'));
+				x3 = parseFloat(form.x3.value.replace(',', '.'));
+				y3 = parseFloat(form.y3.value.replace(',', '.'));
+				
+				y = ((x3-x1)/2+(y3*y3-y2*y2)/(2*(x3-x2))-(y2*y2-y1*y1)/(2*(x2-x1)))/((y1-y2)/(x2-x1)-(y2-y3)/(x3-x2));
+				x = y*(y2-y3)/(x3-x2)+(x3*x3-x2*x2)/(2*(x3-x2))+(y3*y3-y2*y2)/(2*(x3-x2));
+				r = Math.pow(((x1-x)*(x1-x)+(y1-y)*(y1-y)), 1/2);
+				
+				if((x2-x1==0)||(x3-x2==0)||(((y1-y2)/(x2-x1))-((y2-y3)/(x3-x2))==0)) {
+					commenty += "err";
+					commentx += "err";
+					commentr += "err";
+				}
+				else {
+					commenty += Math.round(y*1000)/1000;
+					commentx += Math.round(x*1000)/1000;
+					commentr += Math.round(r*1000)/1000;
+				}
+				
+				form.Resulty.value=commenty;
+				form.Resultx.value=commentx;
+				form.Resultr.value=commentr;
+				console.log(y);
+			}
+		</script>
+		
+	</head>
+	<body>
+		<div id="body_mobile">
+			<h1>Калькулятор поиска центра окружности по трем точкам</h1>			
+			
+			<div id="left">
+				<img src="./центра окружности_files/calc1.png">
+			</div>
+			
+			<div id="content_mobile">
+				<center>
+					<form>
+						
+						x1 =  <input name="x1" size="6" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y1 =  <input name="y1" size="6" value="">
+						<br>
+						x2 =  <input name="x2" size="6" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y2 =  <input name="y2" size="6" value="">
+						<br>
+						x3 =  <input name="x3" size="6" value="">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;y3 =  <input name="y3" size="6" value="">
+						
+						<br><br><br>
+						<input name="Button" onclick="calc_1(this.form)" value="Считать " type="button">
+						<br><br>
+						x=<input style="border:none" size="6" value="   " name="Resultx"><br>
+						y=<input style="border:none" size="6" value="   " name="Resulty"><br>
+						r=<input style="border:none" size="6" value="   " name="Resultr">
+						
+					</form>
+				</center>
+			</div>
+		</div>
+																								<app-content ng-version="10.1.5"></app-content></body><div></div></html>

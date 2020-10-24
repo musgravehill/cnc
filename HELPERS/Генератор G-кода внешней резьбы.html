@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!-- saved from url=(0035)http://segakhv.com/ssserg/calc4.php -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		
+		<meta name="description" content="Калькулятор внешней резьбы">
+		<meta name="keywords" content="Калькулятор внешней резьбы">
+		<meta name="author" content="Sega V Klimoff">
+		<link rel="shortcut icon" type="image/png" href="http://segakhv.com/ssserg/favicon.ico">
+		<link rel="stylesheet" type="text/css" href="./Генератор G-кода внешней резьбы_files/style.css">
+		<script src="./Генератор G-кода внешней резьбы_files/clipboard.js.Без названия"></script>
+		<title>Calc4</title>
+		<style>
+			#left {
+			float: left; /* Обтекание по правому  краю */
+			padding-left: 10px;
+			padding-top: 50px;
+			width: 300px; /* Ширина слоя */
+			text-align: center;
+			}
+			#content_mobile {
+			float: right; /* Обтекание по левому краю */
+			padding-left: 40px;
+			width: 470px; /* Ширина слоя */
+			}
+		</style>
+		
+		<script>
+			function calc_r(form)
+			{
+				// x0   - координаты центра заготовки (default x0=0)
+				// y0   - координаты центра заготовки (default y0=0)
+				// H    - Длина резьбы
+				// m    - Внутренний диаметр резьбы
+				// M    - Внешний диаметр резьбы
+				// mh   - максимальный шаг смещения резьбофрезы при нарезке (default mh=0.1)
+				// F    - рабочая подача мм/сек (default F=300)
+				// P    - шаг резьбы (шаг резьбофрезы)
+				// D    - внешний диаметр резьбофрезы
+				// zSafe - безопасная высота перемещений над заготовкой (default zSafe=10)
+				
+				// Области определения значений
+				// (M-m)/2 <= 0.86*P
+				// mh > 0
+				// F > 0
+				// m > D
+				
+				var X0 = parseFloat(form.X0.value.replace(',', '.'));
+				var Y0 = parseFloat(form.Y0.value.replace(',', '.'));
+				var H = parseFloat(form.H.value.replace(',', '.'));
+				var zSafe = parseFloat(form.zSafe.value.replace(',', '.'));
+				var M0 = parseFloat(form.M0.value.replace(',', '.'));	// M
+				var M1 = parseFloat(form.M1.value.replace(',', '.'));	// m
+				var MH = parseFloat(form.MH.value.replace(',', '.'));
+				var FR = parseFloat(form.FR.value.replace(',', '.'));
+				var P = parseFloat(form.P.value.replace(',', '.'));
+				var D = parseFloat(form.D.value.replace(',', '.'));
+				var L = parseFloat(form.L.value.replace(',', '.'));
+				var F = parseFloat(form.F.value.replace(',', '.'));
+				
+				var nh;         // количество шагов приращения глубины резьбы
+				var mhReal;       // расчетный шаг приращения глубины резьбы
+				var n;          // количество полных витков с округлением в большую сторону n=ceil(H/P)
+				var R;            // внешний радиус резьбонарезной фрезы
+				var chbox;
+				var G;
+				chbox=document.getElementById('LR');
+				
+				// 3 для правой резьбы и 2 для левой
+				if (chbox.checked) {G = "G2";}
+				else {G = "G3";}
+				
+				
+				if ((M0-M1)/2 > 0.86*P) {document.getElementById("GCODE").innerHTML = "Не корректный ввод диаметра резьбы или выбор фрезы"; return false;}
+				if ((M1 >= M0) || (D > M1)) {document.getElementById("GCODE").innerHTML = "Не корректный ввод диаметра резьбы"; return false;}
+				if (MH <= 0) {document.getElementById("GCODE").innerHTML = "Не корректный шаг смещения резьбы"; return false;}
+				if (F <= 0) {document.getElementById("GCODE").innerHTML = "Не корректная рабочая подача"; return false;}
+				if (H > L) {document.getElementById("GCODE").innerHTML = "Слишком большая длина стержня для выбранной фрезы"; return false;}
+				if (F > 999) {document.getElementById("GCODE").innerHTML = "Ебанулся что-ли? Уменьши подачу!"; return false;}
+				if (isNaN(H)) {document.getElementById("GCODE").innerHTML = "Введите H - длинну резьбы"; return false;}
+				if (isNaN(M0)) {document.getElementById("GCODE").innerHTML = "Введите M - внешний диаметр резьбы"; return false;}
+				if (isNaN(M1)) {document.getElementById("GCODE").innerHTML = "Введите m - внутренний диаметр резьбы"; return false;}
+				if (isNaN(P) || isNaN(D) || isNaN(L)) {document.getElementById("GCODE").innerHTML = "Надо выбрать фрезу"; return false;}
+				
+				
+				nh = Math.ceil(((M0-M1)/2)/MH);
+				mhReal = ((M0-M1)/2)/nh;
+				n = Math.ceil(H/P);
+				R = D/2;
+				
+				document.getElementById("GCODE").innerHTML = "G0Z"+zSafe+"<br>";
+				document.getElementById("GCODE").innerHTML += "G0X"+X0+"Y"+MyRound(Y0 - M0/2 - R - 0.1)+"<br>";
+				for (var i=1; i<=nh; i++)
+				{
+					document.getElementById("GCODE").innerHTML += "G1Z"+H*(-1)+"F"+F+"<br>";
+					document.getElementById("GCODE").innerHTML += "G1X"+X0+"Y"+MyRound(Y0-(M0/2)-R+i*mhReal)+"F"+F+"<br>";
+					for (var j=1; j<=n; j++)
+					{
+						document.getElementById("GCODE").innerHTML += G+"J"+MyRound(Y0-(Y0-(M0/2)-R+i*mhReal))+"Z"+MyRound(H*(-1)+j*P)+"F"+F+"<br>";
+					}
+					document.getElementById("GCODE").innerHTML += "G0X"+X0+"Y"+MyRound(Y0 - M0/2 - R - 0.1)+"<br>";
+				}
+				
+				document.getElementById("GCODE").innerHTML += "G0Z"+zSafe+"<br>";
+				document.getElementById("GCODE").innerHTML += "G0X0Y0"+"<br>";
+				document.getElementById("GCODE").innerHTML += "M30"+"<br>";
+
+				
+			}
+			
+			function freza(form) 
+			{
+				var RForm = document.forms.rezba;
+				var FElem = RForm.elements.FR;
+				// console.log(FElem.value);
+				tsv = FElem.value.split('*');
+				RForm.P.value=tsv[0].match(/[\d.]+/)[0];
+				RForm.D.value=tsv[1].match(/[\d.]+/)[0];
+				RForm.L.value=tsv[2].match(/[\d.]+/)[0];
+			}
+			
+			function MyRound(D)
+			{
+				return Math.round(D*10000)/10000;
+			}
+			
+		</script>
+		
+	</head>
+	<body>
+		<div id="body_mobile">
+			
+			
+			<h1>Генератор G-кода внешней резьбы</h1>
+			<br>
+			<div id="left">
+				<img src="./Генератор G-кода внешней резьбы_files/calc4.png">
+			</div>
+			
+			<div id="content_mobile">
+				<form name="rezba">
+					<p><b>Параметры резьбы</b></p>
+					<p>Координаты центра заготовки круглого сечения:</p>
+					x0 = <input name="X0" size="6" value="0.000">  y0 = <input name="Y0" size="6" value="0.000">
+					<p>Длина резьбы и безопасная высота:</p>
+					H = <input name="H" size="6" value="">  zSafe = <input name="zSafe" size="6" value="10">
+					<p>Внешний диаметр резьбы и внутренний:</p>
+					M = <input name="M0" size="6" value="">  m = <input name="M1" size="6" value="">
+					<p>Максимальный шаг смещения при нарезке:</p>
+					mh = <input name="MH" size="6" value="0.1">
+					<p><b>Параметры фрезы</b></p>
+					Выбрать фрезу
+					<select name="FR" onchange="freza();">
+						<option>P0.5*d2.35*7.5L*D4*50</option>
+						<option>P0.7*d3.15*10L*D4*50</option>
+						<option>P1.0*d4.0*13L*D4*50</option>
+						<option>P1.0*d4.85*15L*D6*50</option>
+						<option>P1.25*d6.0*20L*D6*60</option>
+					</select>
+					<p>Шаг резьбы, диаметр и длина фрезы:</p>
+					P = <input name="P" size="6" value="">  D = <input name="D" size="6" value="">  L = <input name="L" size="6" value="">
+					<p>Рабочая подача: F = <input name="F" size="6" value="150"></p>
+					Левая резьба <input type="checkbox" id="LR">
+					<br><br>
+					<input name="Button" onclick="calc_r(this.form)" value="Считать " type="button"><br>
+				</form>
+			</div>
+			<div style=" width:100%; height:1px; clear:both;"> </div>
+			<button class="button" id="copy-button" data-clipboard-target="#GCODE">Скопировать G-Code</button>
+			<div class="GCODE" id="GCODE"></div>
+		</div>
+		<script>
+			var clipboard = new ClipboardJS('#copy-button');
+			
+			/*	clipboard.on('success', function(e) {
+				console.info('Action:', e.action);
+				//  console.info('Text:', e.text);
+				console.info('Trigger:', e.trigger);
+				
+				e.clearSelection();
+				});
+				
+				clipboard.on('error', function(e) {
+				console.error('Action:', e.action);
+				console.error('Trigger:', e.trigger);
+				});
+			*/
+			clipboard.on('success', function(event) {
+				// убираем выделение
+				event.clearSelection();
+				// изменяем текст триггера на Скопировано
+				event.trigger.textContent = 'G-Code скопирован в буфер обмена';
+				// Возращаем через 3 секунды текст триггеру на Копировать 
+				window.setTimeout(function() {
+					event.trigger.textContent = 'Скопировать G-Code';
+				}, 3000);
+			});
+			// если копирование завершилось с ошибкой
+			clipboard.on('error', function(event) {
+				// изменяем текст кнопки 
+				event.trigger.textContent = 'Нажмите "Ctrl + C" для копирования';
+				// через 3 секунды возвращаем кнопки текст "Копировать"
+				window.setTimeout(function() {
+					event.trigger.textContent = 'Скопировать G-Code';
+				}, 3000);
+			});
+		</script>
+																																									<app-content ng-version="10.1.5"></app-content></body><div></div></html>
